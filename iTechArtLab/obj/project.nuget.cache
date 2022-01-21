@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "m586lZSyF+bj2BD6K/aPyN2mM88tlKO7hE7rphFppdEf5mZCIyP0ITn+/KphovqoZT98HhfSxp+HbPmj5XQYKw==",
+  "dgSpecHash": "8HNfeq5UJZ7NDS8dwjfxhtKfiGmkTg+fCiPLhCHINOg8QlIFTZHnrW+h+6G9rc2Oe5iWODrdb3f6d4wTVk4BTQ==",
   "success": true,
-  "projectFilePath": "f:\\Coding\\C#\\iTechArtLab\\oldLab\\iTechArtLab\\iTechArtLab.csproj",
+  "projectFilePath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\iTechArtLab\\iTechArtLab.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\User\\.nuget\\packages\\automapper\\11.0.0\\automapper.11.0.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\fromheaderattribute\\2.0.4\\fromheaderattribute.2.0.4.nupkg.sha512",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XkSrD0k3GV2GH9tp/p5fPZC93v3vA3ShWEabk8SOqf52yB0kdBlOn/LK2bl15qTwl86Wl4ykhypiD+4SvHR1ow==",
+  "dgSpecHash": "gaXFtyUWkZhe1N9DtVfN/HotMKerdBKGrN6iwa0dd8M+oGlkVpHouE09t/9qURaU4xQdPe15LuwutV1QsahHSQ==",
   "success": true,
-  "projectFilePath": "F:\\Coding\\C#\\iTechArtLab\\oldLab\\BuisnessLayer\\BuisnessLayer.csproj",
+  "projectFilePath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\BuisnessLayer\\BuisnessLayer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\User\\.nuget\\packages\\automapper\\11.0.0\\automapper.11.0.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512"

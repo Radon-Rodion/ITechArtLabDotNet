@@ -122,11 +122,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Coding\\C#\\iTechArtLab\\oldLab\\BuisnessLayer\\BuisnessLayer.csproj",
+      "projectUniqueName": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\BuisnessLayer\\BuisnessLayer.csproj",
       "projectName": "BuisnessLayer",
-      "projectPath": "F:\\Coding\\C#\\iTechArtLab\\oldLab\\BuisnessLayer\\BuisnessLayer.csproj",
+      "projectPath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\BuisnessLayer\\BuisnessLayer.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "F:\\Coding\\C#\\iTechArtLab\\oldLab\\BuisnessLayer\\obj\\",
+      "outputPath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\BuisnessLayer\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",

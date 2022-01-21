@@ -6853,11 +6853,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Coding\\C#\\iTechArtLab\\oldLab\\DataAccessLayer\\DataAccessLayer.csproj",
+      "projectUniqueName": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\DataAccessLayer\\DataAccessLayer.csproj",
       "projectName": "DataAccessLayer",
-      "projectPath": "F:\\Coding\\C#\\iTechArtLab\\oldLab\\DataAccessLayer\\DataAccessLayer.csproj",
+      "projectPath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\DataAccessLayer\\DataAccessLayer.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "F:\\Coding\\C#\\iTechArtLab\\oldLab\\DataAccessLayer\\obj\\",
+      "outputPath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\DataAccessLayer\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",

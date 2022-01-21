@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "f:\\Coding\\C#\\iTechArtLab\\oldLab\\iTechArtLab\\iTechArtLab.csproj": {}
+    "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\iTechArtLab\\iTechArtLab.csproj": {}
   },
   "projects": {
-    "F:\\Coding\\C#\\iTechArtLab\\oldLab\\DataAccessLayer\\DataAccessLayer.csproj": {
+    "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\DataAccessLayer\\DataAccessLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Coding\\C#\\iTechArtLab\\oldLab\\DataAccessLayer\\DataAccessLayer.csproj",
+        "projectUniqueName": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\DataAccessLayer\\DataAccessLayer.csproj",
         "projectName": "DataAccessLayer",
-        "projectPath": "F:\\Coding\\C#\\iTechArtLab\\oldLab\\DataAccessLayer\\DataAccessLayer.csproj",
+        "projectPath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\DataAccessLayer\\DataAccessLayer.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "F:\\Coding\\C#\\iTechArtLab\\oldLab\\DataAccessLayer\\obj\\",
+        "outputPath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\DataAccessLayer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -98,14 +98,14 @@
         }
       }
     },
-    "f:\\Coding\\C#\\iTechArtLab\\oldLab\\iTechArtLab\\iTechArtLab.csproj": {
+    "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\iTechArtLab\\iTechArtLab.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "f:\\Coding\\C#\\iTechArtLab\\oldLab\\iTechArtLab\\iTechArtLab.csproj",
+        "projectUniqueName": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\iTechArtLab\\iTechArtLab.csproj",
         "projectName": "iTechArtLab",
-        "projectPath": "f:\\Coding\\C#\\iTechArtLab\\oldLab\\iTechArtLab\\iTechArtLab.csproj",
+        "projectPath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\iTechArtLab\\iTechArtLab.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "f:\\Coding\\C#\\iTechArtLab\\oldLab\\iTechArtLab\\obj\\",
+        "outputPath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\iTechArtLab\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -122,8 +122,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "f:\\Coding\\C#\\iTechArtLab\\oldLab\\DataAccessLayer\\DataAccessLayer.csproj": {
-                "projectPath": "f:\\Coding\\C#\\iTechArtLab\\oldLab\\DataAccessLayer\\DataAccessLayer.csproj"
+              "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\DataAccessLayer\\DataAccessLayer.csproj": {
+                "projectPath": "f:\\Coding\\C#\\iTechArtLab\\ITechArtLabDotNet\\DataAccessLayer\\DataAccessLayer.csproj"
               }
             }
           }
