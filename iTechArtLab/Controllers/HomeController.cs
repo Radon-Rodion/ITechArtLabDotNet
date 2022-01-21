@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace iTechArtLab.Controllers
 {
-    [Route("/")]
+    [Route("/Home")]
     public class HomeController : Controller
     {
-        [HttpGet]
+        [HttpGet("GetInfo")]
         public ObjectResult GetInfo()
         {
             return Ok("Hello world");
