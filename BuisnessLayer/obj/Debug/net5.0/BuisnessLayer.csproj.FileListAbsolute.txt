@@ -1,0 +1,12 @@
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\bin\Debug\net5.0\BuisnessLayer.deps.json
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\bin\Debug\net5.0\BuisnessLayer.dll
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\bin\Debug\net5.0\ref\BuisnessLayer.dll
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\bin\Debug\net5.0\BuisnessLayer.pdb
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\obj\Debug\net5.0\BuisnessLayer.csproj.AssemblyReference.cache
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\obj\Debug\net5.0\BuisnessLayer.GeneratedMSBuildEditorConfig.editorconfig
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\obj\Debug\net5.0\BuisnessLayer.AssemblyInfoInputs.cache
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\obj\Debug\net5.0\BuisnessLayer.AssemblyInfo.cs
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\obj\Debug\net5.0\BuisnessLayer.csproj.CoreCompileInputs.cache
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\obj\Debug\net5.0\BuisnessLayer.dll
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\obj\Debug\net5.0\ref\BuisnessLayer.dll
+F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\obj\Debug\net5.0\BuisnessLayer.pdb
