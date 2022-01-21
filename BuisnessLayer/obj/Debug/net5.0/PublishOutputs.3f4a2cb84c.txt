@@ -1,4 +1,0 @@
-F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\bin\Debug\net5.0\publish\BuisnessLayer.dll
-F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\bin\Debug\net5.0\publish\BuisnessLayer.deps.json
-F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\bin\Debug\net5.0\publish\BuisnessLayer.pdb
-F:\Coding\C#\iTechArtLab\oldLab\BuisnessLayer\bin\Debug\net5.0\publish\AutoMapper.dll
