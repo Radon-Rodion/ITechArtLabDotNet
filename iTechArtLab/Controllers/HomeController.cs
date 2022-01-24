@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace iTechArtLab.Controllers
 {
@@ -15,6 +16,7 @@ namespace iTechArtLab.Controllers
         [HttpGet("GetInfo")]
         public ObjectResult GetInfo()
         {
+            Log.Logger.Information($"GetInfo requested at {DateTime.UtcNow.ToLongTimeString()}");
             return Ok("Hello world");
         }
     }
