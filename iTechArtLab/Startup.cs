@@ -76,7 +76,6 @@ namespace iTechArtLab
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                //c.RoutePrefix = string.Empty;
             });
 
             if (env.IsDevelopment())
@@ -84,12 +83,10 @@ namespace iTechArtLab
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            app.UseExceptionHandler("/Home/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -107,6 +104,8 @@ namespace iTechArtLab
                 endpoints.MapHealthChecks("/hc");
                 endpoints.MapSwagger();
             });
+
+            //throw new Exception("Exception for Serialog on startup");
         }
     }
 }
