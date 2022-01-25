@@ -17,7 +17,15 @@ namespace iTechArtLab.Controllers
         public ObjectResult GetInfo()
         {
             Log.Logger.Information($"GetInfo requested at {DateTime.UtcNow.ToLongTimeString()}");
+            //throw new Exception("Exception for Serilog in HomeController");
             return Ok("Hello world");
+        }
+
+        [HttpGet("Error")]
+        public ObjectResult Error()
+        {
+            Log.Logger.Error($"An unhandled exception occured at {DateTime.UtcNow.ToLongTimeString()}");
+            return Ok("Something went wrong...");
         }
     }
 }
