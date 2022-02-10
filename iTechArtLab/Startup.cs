@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
 using DataAccessLayer;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using BuisnessLayer.JWToken;
 
 namespace iTechArtLab
 {
@@ -35,8 +38,36 @@ namespace iTechArtLab
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            // validation of issuer with validation of token
+                            ValidateIssuer = true,
+                            ValidIssuer = JWTokenOptions.ISSUER,
+
+                            // validation of token consumer
+                            ValidateAudience = true,
+                            // token consumer
+                            ValidAudience = JWTokenOptions.AUDIENCE,
+                            ValidateLifetime = true,
+
+                            // sequrity key setting
+                            IssuerSigningKey = JWTokenOptions.GetSymmetricSecurityKey(),
+                            // sequrity key validation
+                            ValidateIssuerSigningKey = true,
+                        };
+                    });
+
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(JWTokenOptions.LIFETIME);
+            });
+
             services.AddControllersWithViews();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -89,6 +120,7 @@ namespace iTechArtLab
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseRouting();
 
