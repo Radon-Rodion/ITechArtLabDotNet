@@ -9,22 +9,22 @@ namespace iTechArtLab
 {
     public class DBInitializer
     {
-        public static async Task InitializeAsync(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task InitializeAsync(UserManager<IdentityUser<int>> userManager, RoleManager<IdentityRole<int>> roleManager)
         {
             if (await roleManager.FindByNameAsync("admin") == null)
             {
-                await roleManager.CreateAsync(new IdentityRole("admin"));
+                await roleManager.CreateAsync(new IdentityRole<int>("admin"));
             }
             if (await roleManager.FindByNameAsync("user") == null)
             {
-                await roleManager.CreateAsync(new IdentityRole("user"));
+                await roleManager.CreateAsync(new IdentityRole<int>("user"));
             }
 
             string adminEmail = "admin@gmail.com";
             string password = "_Aa123456";
             if (await userManager.FindByNameAsync(adminEmail) == null)
             {
-                var admin = new IdentityUser { Email = adminEmail, UserName = adminEmail };
+                var admin = new IdentityUser<int> { Email = adminEmail, UserName = adminEmail };
                 IdentityResult result = await userManager.CreateAsync(admin, password);
                 if (result.Succeeded)
                 {
@@ -35,7 +35,7 @@ namespace iTechArtLab
             }
         }
 
-        private static async void DeleteAllAsync (UserManager<IdentityUser> userManager)
+        private static async void DeleteAllAsync (UserManager<IdentityUser<int>> userManager)
         {
             var usersArr = userManager.Users.ToArray();
             foreach(var user in usersArr)

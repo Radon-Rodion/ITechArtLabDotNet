@@ -16,11 +16,11 @@ namespace iTechArtLab.Controllers
     [Route("/api/auth")]
     public class AuthController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser<int>> _userManager;
+        private readonly SignInManager<IdentityUser<int>> _signInManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
 
-        public AuthController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AuthController(RoleManager<IdentityRole<int>> roleManager, UserManager<IdentityUser<int>> userManager, SignInManager<IdentityUser<int>> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -53,7 +53,7 @@ namespace iTechArtLab.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user = new IdentityUser { Email = model.Email, UserName = model.Email };
+                IdentityUser<int> user = new IdentityUser<int> { Email = model.Email, UserName = model.Email };
                 // adding user
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -76,7 +76,7 @@ namespace iTechArtLab.Controllers
         }
 
         [NonAction]
-        private async void SendConfirmationEmailAsync(IdentityUser user)
+        private async void SendConfirmationEmailAsync(IdentityUser<int> user)
         {
             var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var confirmationLink = $"https://{Request.Host}/api/auth/email-confirmation?id={user.Id}&token={emailConfirmationToken}";
