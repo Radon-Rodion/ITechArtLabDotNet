@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using BuisnessLayer.JWToken;
+using TestProject.Moq;
 
 namespace TestProject.BuisnessLogicTests
 {
@@ -14,33 +15,43 @@ namespace TestProject.BuisnessLogicTests
         const string MOQ_USER_ROLE = "UserRole";
 
         [Fact]
-        public void TestTokenOptions()
+        public void TestTokenConfig()
         {
-            Assert.NotNull(JWTokenOptions.ISSUER);
-            Assert.NotNull(JWTokenOptions.AUDIENCE);
-            Assert.True(JWTokenOptions.LIFETIME > 0, "Token lifetime is negative or 0");
-            Assert.NotNull(JWTokenOptions.GetSymmetricSecurityKey());
+            Assert.NotNull(MoqConfigs.jwtConfig.Issuer);
+            Assert.NotNull(MoqConfigs.jwtConfig.Audience);
+            Assert.True(MoqConfigs.jwtConfig.Lifetime > 0, "Token lifetime is negative or 0");
+            Assert.NotNull(MoqConfigs.jwtConfig.GetSymmetricSecurityKey());
         }
 
         [Fact]
-        public void TestTokenGenerator()
+        public void TestTokenGeneratorNegtive()
         {
-            Assert.Throws<ArgumentNullException>(() => JWTokenGenerator.GenerateToken(MOQ_USER_NAME, null));
-            Assert.Throws<ArgumentNullException>(() => JWTokenGenerator.GenerateToken(null, MOQ_USER_ROLE));
+            Assert.Throws<ArgumentNullException>(() => JWTokenGenerator.GenerateToken(MOQ_USER_NAME, null, MoqConfigs.jwtConfig));
+            Assert.Throws<ArgumentNullException>(() => JWTokenGenerator.GenerateToken(null, MOQ_USER_ROLE, MoqConfigs.jwtConfig));
+        }
 
-            var token1 = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE);
-            var token2 = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE);
+        [Fact]
+        public void TestTokenGeneratorPositive()
+        {
+            var token1 = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE, MoqConfigs.jwtConfig);
+            var token2 = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE, MoqConfigs.jwtConfig);
             Assert.True(token1.Substring(0, 50) == token2.Substring(0, 50), "Tokens with same data beginings must be equal!");
         }
 
         [Fact]
-        public void TestTokenValidator()
+        public void TestTokenValidatorNegative()
         {
-            var validToken = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE);
-            var invalidToken = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, "");
+            var invalidToken = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, "", MoqConfigs.jwtConfig);
 
-            Assert.True(JWTokenValidator.ValidateTokenRole(validToken, MOQ_USER_ROLE), "Valid token validation fail");
-            Assert.False(JWTokenValidator.ValidateTokenRole(invalidToken, MOQ_USER_ROLE), "Invalid token validation fail");
+            Assert.False(JWTokenValidator.ValidateTokenRole(invalidToken, MOQ_USER_ROLE, MoqConfigs.jwtConfig), "Invalid token validation fail");
+        }
+
+        [Fact]
+        public void TestTokenValidatorPositive()
+        {
+            var validToken = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE, MoqConfigs.jwtConfig);
+
+            Assert.True(JWTokenValidator.ValidateTokenRole(validToken, MOQ_USER_ROLE, MoqConfigs.jwtConfig), "Valid token validation fail");
         }
     }
 }

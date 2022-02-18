@@ -18,6 +18,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BuisnessLayer.JWToken;
+using BuisnessLayer.Senders;
+using DataAccessLayer.Entities;
 
 namespace iTechArtLab
 {
@@ -33,12 +35,18 @@ namespace iTechArtLab
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add functionality to inject IOptions<T>
+            services.AddOptions();
+
+            services.Configure<JWTokenConfig>(Configuration.GetSection("JWTokenConfig"));
+            services.Configure<SmtpConfig>(Configuration.GetSection("SmtpConfig"));
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser<int>>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole<int>>()
+            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole<int>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -49,23 +57,23 @@ namespace iTechArtLab
                         {
                             // validation of issuer with validation of token
                             ValidateIssuer = true,
-                            ValidIssuer = JWTokenOptions.ISSUER,
+                            ValidIssuer = Configuration.GetSection("JWTokenConfig").GetSection("Issuer").Value,
 
                             // validation of token consumer
                             ValidateAudience = true,
                             // token consumer
-                            ValidAudience = JWTokenOptions.AUDIENCE,
+                            ValidAudience = Configuration.GetSection("JWTokenConfig").GetSection("Audience").Value,
                             ValidateLifetime = true,
 
                             // sequrity key setting
-                            IssuerSigningKey = JWTokenOptions.GetSymmetricSecurityKey(),
+                            IssuerSigningKey = JWTokenConfig.GetSymmetricSecurityKey(Configuration.GetSection("JWTokenConfig").GetSection("Key").Value),
                             // sequrity key validation
                             ValidateIssuerSigningKey = true,
                         };
                     });
 
             services.AddSession(options => {
-                options.IdleTimeout = TimeSpan.FromMinutes(JWTokenOptions.LIFETIME);
+                options.IdleTimeout = TimeSpan.FromMinutes(System.Convert.ToInt32(Configuration.GetSection("JWTokenConfig").GetSection("Lifetime").Value));
             });
 
             services.AddControllersWithViews();

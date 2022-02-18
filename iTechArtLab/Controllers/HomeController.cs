@@ -7,9 +7,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using System.Text;
 using BuisnessLayer;
+using DataAccessLayer.Data;
 using BuisnessLayer.JWToken;
 
 namespace iTechArtLab.Controllers
@@ -17,22 +19,21 @@ namespace iTechArtLab.Controllers
     [Route("/Home")]
     public class HomeController : Controller
     {
+        private readonly JWTokenConfig _jWTokenConfig;
+
+        public HomeController(IOptions<JWTokenConfig> jWTokenOptions)
+        {
+            _jWTokenConfig = jWTokenOptions.Value;
+        }
 
         [HttpGet("GetInfo")]
         public string GetInfo()
         {
-            if (!SessionManager.HasToken(HttpContext.Session)) //check authenticated
-            {
-                HttpContext.Response.StatusCode = 401;
-                return "Sign in first!";
-            }
-            if (!JWTokenValidator.ValidateTokenRole(SessionManager.GetToken(HttpContext.Session), "admin")) //check role
-            {
-                HttpContext.Response.StatusCode = 403;
-                return "You are not admin!";
-            }
+            string errorResponse;
+            if (!AccessControlManager.ValidateAccess(HttpContext, out errorResponse, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
 
             Log.Logger.Information($"GetInfo requested at {DateTime.UtcNow.ToLongTimeString()}");
+            HttpContext.Response.StatusCode = 200;
             //throw new Exception("Exception for Serilog in HomeController");
             return "Hello world";
         }

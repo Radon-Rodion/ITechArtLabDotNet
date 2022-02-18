@@ -12,10 +12,10 @@ namespace BuisnessLayer.JWToken
 {
     public class JWTokenValidator
     {
-        public static bool ValidateTokenRole(string authToken, string role)
+        public static bool ValidateTokenRole(string authToken, string role, JWTokenConfig config)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var validationParameters = GetValidationParameters();
+            var validationParameters = GetValidationParameters(config);
 
             SecurityToken validatedToken;
             ClaimsPrincipal claims = tokenHandler.ValidateToken(authToken, validationParameters, out validatedToken);
@@ -25,14 +25,14 @@ namespace BuisnessLayer.JWToken
             return true;
         }
 
-        private static TokenValidationParameters GetValidationParameters()
+        private static TokenValidationParameters GetValidationParameters(JWTokenConfig config)
         {
             return new TokenValidationParameters()
             {
                 ValidateLifetime = false,
-                ValidIssuer = JWTokenOptions.ISSUER,
-                ValidAudience = JWTokenOptions.AUDIENCE,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWTokenOptions.KEY)) // The same key as the one that generate the token
+                ValidIssuer = config.Issuer,
+                ValidAudience = config.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.Key)) // The same key as the one that generate the token
             };
         }
     }

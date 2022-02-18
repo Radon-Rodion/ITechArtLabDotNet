@@ -27,19 +27,19 @@ namespace BuisnessLayer.JWToken
             return claimsIdentity;
         }
 
-        public static string GenerateToken(string userName, string userRole)
+        public static string GenerateToken(string userName, string userRole, JWTokenConfig config)
         {
             var identity = GetClaimsIdentity(userName, userRole);
 
             var now = DateTime.UtcNow;
             // creating token
             var jwt = new JwtSecurityToken(
-                    issuer: JWTokenOptions.ISSUER,
-                    audience: JWTokenOptions.AUDIENCE,
+                    issuer: config.Issuer,
+                    audience: config.Audience,
                     notBefore: now,
                     claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(JWTokenOptions.LIFETIME)),
-                    signingCredentials: new SigningCredentials(JWTokenOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                    expires: now.Add(TimeSpan.FromMinutes(config.Lifetime)),
+                    signingCredentials: new SigningCredentials(config.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return encodedJwt;

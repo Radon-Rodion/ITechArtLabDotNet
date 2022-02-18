@@ -1,42 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
+using DataAccessLayer.Data;
+using DataAccessLayer.Entities;
 
 namespace iTechArtLab
 {
     public class DBInitializer
     {
-        public static async Task InitializeAsync(UserManager<IdentityUser<int>> userManager, RoleManager<IdentityRole<int>> roleManager)
+        public static async Task InitializeAsync(UserManager<User> userManager, RoleManager<IdentityRole<int>> roleManager)
         {
-            if (await roleManager.FindByNameAsync("admin") == null)
+            foreach(Roles role in Enum.GetValues(typeof(Roles)))
             {
-                await roleManager.CreateAsync(new IdentityRole<int>("admin"));
-            }
-            if (await roleManager.FindByNameAsync("user") == null)
-            {
-                await roleManager.CreateAsync(new IdentityRole<int>("user"));
+                if (await roleManager.FindByNameAsync(Role.Name(role)) == null)
+                {
+                    await roleManager.CreateAsync(new IdentityRole<int>(Role.Name(role)));
+                }
             }
 
             string adminEmail = "admin@gmail.com";
             string password = "_Aa123456";
             if (await userManager.FindByNameAsync(adminEmail) == null)
             {
-                var admin = new IdentityUser<int> { Email = adminEmail, UserName = adminEmail };
+                var admin = new User { Email = adminEmail, UserName = adminEmail };
                 IdentityResult result = await userManager.CreateAsync(admin, password);
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(admin, "admin");
+                    await userManager.AddToRoleAsync(admin, Role.Name(Roles.Admin));
                     await userManager.ConfirmEmailAsync(admin, await userManager.GenerateEmailConfirmationTokenAsync(admin));
                 }
                 else Log.Logger.Warning("Admin in DB not initialized");
             }
         }
 
-        private static async void DeleteAllAsync (UserManager<IdentityUser<int>> userManager)
+        private static async void DeleteAllAsync (UserManager<User> userManager)
         {
+            Thread.Sleep(300);
             var usersArr = userManager.Users.ToArray();
             foreach(var user in usersArr)
             {

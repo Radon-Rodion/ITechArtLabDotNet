@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using DataAccessLayer.Models;
+using DataAccessLayer.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
 using System.Text;
@@ -11,34 +13,36 @@ using BuisnessLayer.JWToken;
 using BuisnessLayer.Senders;
 using BuisnessLayer;
 
+
 namespace iTechArtLab.Controllers
 {
     [Route("/api/auth")]
     public class AuthController : Controller
     {
-        private readonly UserManager<IdentityUser<int>> _userManager;
-        private readonly SignInManager<IdentityUser<int>> _signInManager;
+        private readonly UserManager<User> _userManager;
+        //private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole<int>> _roleManager;
+        private readonly SmtpConfig _smtpConfig;
+        private readonly JWTokenConfig _jWTokenConfig;
 
-        public AuthController(RoleManager<IdentityRole<int>> roleManager, UserManager<IdentityUser<int>> userManager, SignInManager<IdentityUser<int>> signInManager)
+        public AuthController(RoleManager<IdentityRole<int>> roleManager, UserManager<User> userManager, IOptions<SmtpConfig> smtpOptions, IOptions<JWTokenConfig> jWTokenOptions)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
+            //_signInManager = signInManager;
             _roleManager = roleManager;
+            _smtpConfig = smtpOptions.Value;
+            _jWTokenConfig = jWTokenOptions.Value;
             DBInitializer.InitializeAsync(_userManager, _roleManager).Wait();
         }
 
         [HttpGet]
         public async Task<string> Index() //shows all accs info
         {
-            if (!SessionManager.HasToken(HttpContext.Session)) //check authenticated
-            {
-                HttpContext.Response.StatusCode = 401;
-                return "Sign in first!";
-            }
+            string errorMessage;
+            if (!AccessControlManager.ValidateAccess(HttpContext, out errorMessage)) return errorMessage;
 
-            var result = new StringBuilder($"Email : EmailConfirmed : Is admin\n");
-            foreach (var user in _userManager.Users) result.Append($"{user.Email} : {user.EmailConfirmed} : {(await _userManager.GetRolesAsync(user)).Any(e => e== "admin")}\n");
+            var result = new StringBuilder($"Email : UserName : EmailConfirmed : Is admin : PasswordHash\n");
+            foreach (var user in _userManager.Users) result.Append($"{user.Email} : {user.UserName} : {user.EmailConfirmed} : {(await _userManager.GetRolesAsync(user)).Any(e => e== "admin")} : {user.PasswordHash}\n");
             return result.ToString();
         }
 
@@ -53,7 +57,7 @@ namespace iTechArtLab.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityUser<int> user = new IdentityUser<int> { Email = model.Email, UserName = model.Email };
+                User user = new User { Email = model.Email, UserName = model.Email };
                 // adding user
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -76,11 +80,11 @@ namespace iTechArtLab.Controllers
         }
 
         [NonAction]
-        private async void SendConfirmationEmailAsync(IdentityUser<int> user)
+        private async void SendConfirmationEmailAsync(User user)
         {
             var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var confirmationLink = $"https://{Request.Host}/api/auth/email-confirmation?id={user.Id}&token={emailConfirmationToken}";
-            IEmailSender sender = new SmtpSender();
+            IEmailSender sender = new SmtpSender(_smtpConfig);
             sender.SendMess(user.Email, "Confirm email for account", $"To confirm this email, please visit link: {confirmationLink}");
         }
 
@@ -128,18 +132,22 @@ namespace iTechArtLab.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-                if (result.Succeeded)
-                {
-                    var user = await _userManager.FindByNameAsync(model.Email);
-                    var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
-                    SessionManager.SetToken(HttpContext.Session, JWTokenGenerator.GenerateToken(user?.Email, userRole));
-                    return Ok($"Glad to see you, {user.Email} !");
-                }
-                else
+                var hasher = new PasswordHasher<User>();
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                //var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false); result.Succeeded
+                var result = hasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
+                if (result == PasswordVerificationResult.Failed)
                 {
                     ModelState.AddModelError("", "Invalid login/password!");
                     HttpContext.Response.StatusCode = 401;
+                }
+                else
+                {
+                    var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+                    SessionManager.SetToken(HttpContext.Session, JWTokenGenerator.GenerateToken(user?.Email, userRole, _jWTokenConfig));
+                    SessionManager.SetUserId(HttpContext.Session, user.Id);
+                    return Ok($"Glad to see you, {user.UserName} !");
                 }
             }
             return View(model);

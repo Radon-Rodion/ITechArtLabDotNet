@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text;
+using TestProject.Moq;
 
 namespace TestProject.BuisnessLogicTests
 {
@@ -15,11 +16,15 @@ namespace TestProject.BuisnessLogicTests
         const string MOQ_TOKEN = "MoqJWToken12_0 ";
 
         [Fact]
-        public void TestSetting()
+        public void TestSettingNegative()
         {
             Assert.Throws<NullReferenceException>(() => SessionManager.SetToken(null, MOQ_TOKEN));
             Assert.Throws<ArgumentNullException>(() => SessionManager.SetToken(moqSession, null));
+        }
 
+        [Fact]
+        public void TestSettingPositive()
+        {
             SessionManager.SetToken(moqSession, MOQ_TOKEN);
 
             var moqSessionKeysEnumerator = moqSession.Keys.GetEnumerator();
@@ -41,50 +46,6 @@ namespace TestProject.BuisnessLogicTests
             SessionManager.SetToken(moqSession, MOQ_TOKEN);
             Assert.True(SessionManager.HasToken(moqSession), "Session manager HasToken method can't find existing token");
             Assert.True(SessionManager.GetToken(moqSession) == MOQ_TOKEN, "Got invalid token from session");
-        }
-
-        private class MoqSession : ISession
-        {
-            IDictionary<string, byte[]> sessionDict;
-
-            public MoqSession() => sessionDict = new Dictionary<string, byte[]>();
-
-            public bool IsAvailable => sessionDict != null;
-
-            public string Id => throw new NotImplementedException();
-
-            public IEnumerable<string> Keys => sessionDict.Keys;
-
-            public void Clear()
-            {
-                sessionDict.Clear();
-            }
-
-            public Task CommitAsync(CancellationToken cancellationToken = default)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Task LoadAsync(CancellationToken cancellationToken = default)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Remove(string key)
-            {
-                sessionDict.Remove(key);
-            }
-
-            public void Set(string key, byte[] value)
-            {
-                if (sessionDict.ContainsKey(key)) sessionDict.Remove(key);
-                sessionDict.Add(new KeyValuePair<string, byte[]>(key, value));
-            }
-
-            public bool TryGetValue(string key, out byte[] value)
-            {
-                return sessionDict.TryGetValue(key, out value);
-            }
         }
     }
 }
