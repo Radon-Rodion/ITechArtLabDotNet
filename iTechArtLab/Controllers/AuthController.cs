@@ -134,10 +134,9 @@ namespace iTechArtLab.Controllers
             {
                 var hasher = new PasswordHasher<User>();
                 var user = await _userManager.FindByEmailAsync(model.Email);
-
                 //var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false); result.Succeeded
-                var result = hasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
-                if (result == PasswordVerificationResult.Failed)
+
+                if (user == null || hasher.VerifyHashedPassword(user, user.PasswordHash, model.Password) == PasswordVerificationResult.Failed)
                 {
                     ModelState.AddModelError("", "Invalid login/password!");
                     HttpContext.Response.StatusCode = 401;
