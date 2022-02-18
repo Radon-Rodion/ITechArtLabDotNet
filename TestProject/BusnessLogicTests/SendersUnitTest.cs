@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using BuisnessLayer.Senders;
+using TestProject.Moq;
 
 namespace TestProject.BuisnessLogicTests
 {
@@ -13,7 +14,7 @@ namespace TestProject.BuisnessLogicTests
         [Fact]
         public void TestSmtp()
         {
-            IEmailSender mailer = new SmtpSender();
+            IEmailSender mailer = new SmtpSender(MoqConfigs.smtpConfig);
             mailer.SendMess("radon0rodion@gmail.com", "UnitTest message", "This is just a program test");
         }
     }

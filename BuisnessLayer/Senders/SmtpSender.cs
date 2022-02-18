@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
-using static BuisnessLayer.Senders.SmtpOptions;
 
 namespace BuisnessLayer.Senders
 {
@@ -23,7 +22,7 @@ namespace BuisnessLayer.Senders
             addressFrom = userName;
         }
 
-        public SmtpSender() : this(HOST_NAME, PORT, USER_NAME, USER_PASSWORD) { }
+        public SmtpSender(SmtpConfig config) : this(config.HostName, config.Port, config.UserName, config.UserPassword) {}
 
         public void SendMess(string addressTo, string messageTheme, string messageBody)
         {

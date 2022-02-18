@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BuisnessLayer\BuisnessLayer.csproj" />
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
+    <ProjectReference Include="..\iTechArtLab\iTechArtLab.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using BuisnessLayer;
 
 using DataAccessLayer.Models;
 
@@ -13,26 +14,30 @@ namespace TestProject.DataAcessLayerTests
     public class ViewModelsUnitTest
     {
         [Fact]
-        public void SignInViewModelTest()
+        public void SignInViewModelPositiveTest()
         {
             var validModel = new SignInViewModel
             {
                 Email = "some00email@gmail.com",
                 Password="Qwerty123"
             };
-            var errorcount = ValidateViewModel(validModel).Count();
+            var errorcount = ModelValidator.ValidateViewModel(validModel).Count();
             Assert.Equal(0, errorcount);
+        }
 
+        [Fact]
+        public void SignInViewModelNegativeTest()
+        {
             var modelWithout2Fields = new SignInViewModel
             {
-                RememberMe=true
+                RememberMe = true
             };
-            errorcount = ValidateViewModel(modelWithout2Fields).Count();
+            var errorcount = ModelValidator.ValidateViewModel(modelWithout2Fields).Count();
             Assert.Equal(2, errorcount);
         }
 
         [Fact]
-        public void SignUpViewModelTest()
+        public void SignUpViewModelPositiveTest()
         {
             var validModel = new SignUpViewModel
             {
@@ -40,26 +45,87 @@ namespace TestProject.DataAcessLayerTests
                 Password = "Qwerty123",
                 PasswordConfirm = "Qwerty123"
             };
-            var errorcount = ValidateViewModel(validModel).Count();
+            var errorcount = ModelValidator.ValidateViewModel(validModel).Count();
             Assert.Equal(0, errorcount);
+        }
 
+        [Fact]
+        public void SignUpViewModelNegativeTest()
+        {
             var modelWithout1Field = new SignUpViewModel
             {
                 Email = "some00email@gmail.com",
                 Password = "Qwerty123"
             };
-            errorcount = ValidateViewModel(modelWithout1Field).Count();
+            var errorcount = ModelValidator.ValidateViewModel(modelWithout1Field).Count();
             Assert.Equal(1, errorcount);
         }
 
-        public IList<ValidationResult> ValidateViewModel(object model)
+        [Fact]
+        public void ProfileInfoViewModelPositiveTest()
         {
-            var result = new List<ValidationResult>();
-            var validationContext = new ValidationContext(model);
-            Validator.TryValidateObject(model, validationContext, result);
-            if (model is IValidatableObject) (model as IValidatableObject).Validate(validationContext);
+            var validModel = new ProfileViewModel
+            {
+                Email = "some00email@gmail.com",
+                UserName = "Arkadyj",
+                Delivery = "Homel, Sovetskaya 14/21"
+            };
+            var errorcount = ModelValidator.ValidateViewModel(validModel).Count();
+            Assert.Equal(0, errorcount);
+        }
 
-            return result;
+        [Fact]
+        public void ProfileInfoViewModelNegativeTest()
+        {
+            var modelWithout1Field = new ProfileViewModel
+            {
+                Email = "some00email@gmail.com",
+                PhoneNumber = "+375336512314"
+            };
+            var errorcount = ModelValidator.ValidateViewModel(modelWithout1Field).Count();
+            Assert.Equal(1, errorcount);
+
+            var modelWithout2Fields = new ProfileViewModel
+            {
+                Delivery = "Homel, Sovetskaya 14/21",
+                PhoneNumber = "+375336512314"
+            };
+
+            errorcount = ModelValidator.ValidateViewModel(modelWithout2Fields).Count();
+            Assert.Equal(2, errorcount);
+        }
+
+        [Fact]
+        public void PasswordChangeViewModelPositiveTest()
+        {
+            var validModel = new ChangePasswordViewModel
+            {
+                OldPassword = "123456_Test",
+                NewPassword = "_Test123456",
+                NewPasswordConfirm = "_Test123456",
+            };
+            var errorcount = ModelValidator.ValidateViewModel(validModel).Count();
+            Assert.Equal(0, errorcount);
+        }
+
+        [Fact]
+        public void PasswordChangeViewModelNegativeTest()
+        {
+            var modelWithout1Field = new ChangePasswordViewModel
+            {
+                OldPassword = "123456_Test",
+                NewPassword = "_Test123456",
+            };
+            var errorcount = ModelValidator.ValidateViewModel(modelWithout1Field).Count();
+            Assert.Equal(1, errorcount);
+
+            var modelWithout2Fields = new ChangePasswordViewModel
+            {
+                NewPassword = "_Test123456",
+            };
+
+            errorcount = ModelValidator.ValidateViewModel(modelWithout2Fields).Count();
+            Assert.Equal(2, errorcount);
         }
     }
 }

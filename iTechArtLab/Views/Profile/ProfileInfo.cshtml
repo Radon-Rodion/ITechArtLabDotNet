@@ -1,0 +1,62 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using DataAccessLayer.Models
+@model ProfileViewModel
+
+<h2>Profile Info</h2>
+<label id="textInfo"></label><br />
+<form>
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" id="email"/>
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div>
+        <label asp-for="UserName"></label><br />
+        <input asp-for="UserName" id="userName"/>
+        <span asp-validation-for="UserName"></span>
+    </div>
+    <div>
+        <label asp-for="Delivery"></label><br />
+        <input asp-for="Delivery" id="delivery"/>
+        <span asp-validation-for="Delivery"></span>
+    </div>
+    <div>
+        <label asp-for="PhoneNumber"></label><br />
+        <input asp-for="PhoneNumber" id="phoneNumber"/>
+        <span asp-validation-for="PhoneNumber"></span>
+    </div>
+    <div>
+        <input type="submit" value="Change info" id="submitBtn"/>
+        <a href="/api/user/password">Change password</a>
+    </div>
+</form>
+
+<script>
+    async function sendDataAsync() {
+        const formData = new FormData();
+        formData.append('email', document.getElementById("email").value);
+        formData.append('userName', document.getElementById("userName").value);
+        formData.append('delivery', document.getElementById("delivery").value);
+        formData.append('phoneNumber', document.getElementById("phoneNumber").value);
+
+        const response = await fetch("/api/user", {
+            method: 'put',
+            headers: { "Accept": "application/json" },
+            body: formData
+        });
+        const data = await response.json();
+
+        if (response.ok === true) {
+            document.getElementById("email").value = data.email;
+            document.getElementById("userName").value = data.userName;
+            document.getElementById("delivery").value = data.delivery;
+            document.getElementById("phoneNumber").value = data.phoneNumber;
+            document.getElementById("textInfo").value = "Information successfully changed";
+        }
+    }
+    document.getElementById("submitBtn").addEventListener("click", e => {
+        e.preventDefault();
+        sendDataAsync();
+    });
+</script>
