@@ -43,7 +43,6 @@ namespace BuisnessLayer
         {
             byte[] arr;
             session.TryGetValue(key, out arr);
-            session.TryGetValue(key, out arr);
             return arr;
         }
     }
