@@ -35,23 +35,40 @@ namespace iTechArtLab.Controllers
             DBInitializer.InitializeAsync(_userManager, _roleManager).Wait();
         }
 
+        /// <summary>
+        /// Get request for all profiles info
+        /// </summary>
+        /// <remarks>/api/auth</remarks>
+        /// <response code="200">Stringifyed table with all accounts info</response>
+        /// <response code="401">Sign in required</response>
         [HttpGet]
         public async Task<string> Index() //shows all accs info
         {
             string errorMessage;
-            if (!AccessControlManager.ValidateAccess(HttpContext, out errorMessage)) return errorMessage;
+            if (!AccessControlManager.IsTokenValid(HttpContext, out errorMessage)) return errorMessage;
 
             var result = new StringBuilder($"Email : UserName : EmailConfirmed : Is admin : PasswordHash\n");
             foreach (var user in _userManager.Users) result.Append($"{user.Email} : {user.UserName} : {user.EmailConfirmed} : {(await _userManager.GetRolesAsync(user)).Any(e => e== "admin")} : {user.PasswordHash}\n");
             return result.ToString();
         }
 
+        /// <summary>
+        /// Get request for sign-up page
+        /// </summary>
+        /// <remarks>/api/auth/sign-up</remarks>
+        /// <response code="200">SignUp View</response>
         [HttpGet("sign-up")]
         public IActionResult SignUp()
         {
             return View();
         }
 
+        /// <summary>
+        /// Post request to sign-up new account
+        /// </summary>
+        /// <remarks>/api/auth/sign-up</remarks>
+        /// <response code="201">new account is created but still not activated</response>
+        /// <response code="400">View SignUp with errors messages</response>
         [HttpPost("sign-up")]
         public async Task<object> SignUp(SignUpViewModel model) //performs registration
         {
@@ -79,6 +96,11 @@ namespace iTechArtLab.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// email-sending method with auto-generated information to confirm email box
+        /// </summary>
+        /// <param name="user">user that will get email</param>
+        /// <remarks>Private</remarks>
         [NonAction]
         private async void SendConfirmationEmailAsync(User user)
         {
@@ -88,6 +110,14 @@ namespace iTechArtLab.Controllers
             sender.SendMess(user.Email, "Confirm email for account", $"To confirm this email, please visit link: {confirmationLink}");
         }
 
+        /// <summary>
+        /// Get request for email activation of new account
+        /// </summary>
+        /// <remarks>/api/auth/email-confirmation</remarks>
+        /// <param name="id" example="1342">confirming account id</param>
+        /// <param name="token" example="AAbdfkle95k2ls+91DgsS67jd">email confirmation token</param>
+        /// <response code="204">Account activated and message about activation is returned</response>
+        /// <response code="400">Error message</response>
         [HttpGet("email-confirmation")]
         public async Task<string> ConfirmAcc(string id, string token)
         {
@@ -120,12 +150,23 @@ namespace iTechArtLab.Controllers
             return "Account successfully confirmed!";
         }
 
+        /// <summary>
+        /// Get request for sign-in page
+        /// </summary>
+        /// <remarks>/api/auth/sign-in</remarks>
+        /// <response code="200">SignIn View</response>
         [HttpGet("sign-in")]
         public IActionResult SignIn()
         {
             return View();
         }
 
+        /// <summary>
+        /// Post request to sign-in account
+        /// </summary>
+        /// <remarks>/api/auth/sign-in</remarks>
+        /// <response code="200">JWT tolen is set into session and greeting message is returned</response>
+        /// <response code="401">View SignIn with errors messages</response>
         [HttpPost("sign-in")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn(SignInViewModel model) //performs authentication

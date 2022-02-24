@@ -1,0 +1,90 @@
+﻿@model IEnumerable<DataAccessLayer.Entities.Product>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Search</h1>
+<form method="get">
+    <div class="form-group">
+        <label for="term" class="control-label">Saerch text:</label>
+        <input name="term" class="form-control" id="term" />
+        <span asp-validation-for="term" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="limit" class="control-label">Limit:</label>
+        <input name="limit" class="form-control" type="number" id="limit" />
+    </div>
+    <div class="form-group">
+        <label for="offset" class="control-label">Offset:</label>
+        <input name="offset" class="form-control" type="number" id="offset" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Search" class="btn btn-primary" />
+    </div>
+</form>
+
+<p>
+    <a href="/api/games">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlatformId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AgeRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LogoLink)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BackgroundLink)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Count)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlatformId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalRating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AgeRating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LogoLink)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BackgroundLink)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Count)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -26,11 +26,18 @@ namespace iTechArtLab.Controllers
             _jWTokenConfig = jWTokenOptions.Value;
         }
 
+        /// <summary>
+        /// Test method returning HelloWorld and available for admins only
+        /// </summary>
+        /// <remarks>/Home/GetInfo</remarks>
+        /// <response code="200">Hello world</response>
+        /// <response code="401">Sign in required</response>
+        /// <response code="403">Admin role required</response>
         [HttpGet("GetInfo")]
         public string GetInfo()
         {
             string errorResponse;
-            if (!AccessControlManager.ValidateAccess(HttpContext, out errorResponse, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
+            if (!AccessControlManager.IsTokenValid(HttpContext, out errorResponse, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
 
             Log.Logger.Information($"GetInfo requested at {DateTime.UtcNow.ToLongTimeString()}");
             HttpContext.Response.StatusCode = 200;

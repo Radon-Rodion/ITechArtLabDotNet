@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using BuisnessLayer.JWToken;
 using BuisnessLayer.Senders;
 using DataAccessLayer.Entities;
+using System.IO;
 
 namespace iTechArtLab
 {
@@ -99,6 +100,9 @@ namespace iTechArtLab
                         Url = new Uri("https://example.com/license"),
                     }
                 });
+                c.IncludeXmlComments(Path.Combine(System.AppContext.BaseDirectory, "iTechArtLab.xml"));
+                c.IncludeXmlComments(Path.Combine(System.AppContext.BaseDirectory, "DataAccessLayer.xml"));
+                c.IncludeXmlComments(Path.Combine(System.AppContext.BaseDirectory, "BuisnessLayer.xml"));
             });
 
             // Registers required services for health checks

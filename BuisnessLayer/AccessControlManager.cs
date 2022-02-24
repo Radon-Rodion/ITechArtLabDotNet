@@ -9,7 +9,7 @@ namespace BuisnessLayer
 {
     public class AccessControlManager
     {
-        public static bool ValidateAccess(HttpContext context, out string response, string role = null, JWTokenConfig tokenConfig = null)
+        public static bool IsTokenValid(HttpContext context, out string response, string role = null, JWTokenConfig tokenConfig = null)
         {
             response = null;
             if (!SessionManager.HasToken(context.Session)) //check authenticated
@@ -17,7 +17,7 @@ namespace BuisnessLayer
                 context.Response.StatusCode = 401;
                 response = "Sign in first!";
             }
-            if (role!= null && !JWTokenValidator.ValidateTokenRole(SessionManager.GetToken(context.Session), role, tokenConfig)) //check role
+            if (role!= null && !JWTokenValidator.IsTokenRoleValid(SessionManager.GetToken(context.Session), role, tokenConfig)) //check role
             {
                 context.Response.StatusCode = 403;
                 response = "You are not admin!";

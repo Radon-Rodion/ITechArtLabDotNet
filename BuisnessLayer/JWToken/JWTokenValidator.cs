@@ -12,7 +12,13 @@ namespace BuisnessLayer.JWToken
 {
     public class JWTokenValidator
     {
-        public static bool ValidateTokenRole(string authToken, string role, JWTokenConfig config)
+        /// <summary>
+        /// Validates token role
+        /// </summary>
+        /// <param name="authToken" example="AAbdfkle95k2ls+91DgsS67jd">token to be validated</param>
+        /// <param name="role" example="Admin">role to be validated</param>
+        /// <param name="config">JWT token configuration parameters</param>
+        public static bool IsTokenRoleValid(string authToken, string role, JWTokenConfig config)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var validationParameters = GetValidationParameters(config);

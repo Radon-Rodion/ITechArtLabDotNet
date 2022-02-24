@@ -1,0 +1,33 @@
+﻿@model IEnumerable<DataAccessLayer.Entities.Platform>
+
+@{
+    ViewData["Title"] = "Platforms";
+}
+
+<h1>Top Platforms</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PlatformId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlatformName)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlatformId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlatformName)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

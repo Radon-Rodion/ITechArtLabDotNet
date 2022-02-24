@@ -43,7 +43,7 @@ namespace TestProject.BuisnessLogicTests
         {
             var invalidToken = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, "", MoqConfigs.jwtConfig);
 
-            Assert.False(JWTokenValidator.ValidateTokenRole(invalidToken, MOQ_USER_ROLE, MoqConfigs.jwtConfig), "Invalid token validation fail");
+            Assert.False(JWTokenValidator.IsTokenRoleValid(invalidToken, MOQ_USER_ROLE, MoqConfigs.jwtConfig), "Invalid token validation fail");
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace TestProject.BuisnessLogicTests
         {
             var validToken = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE, MoqConfigs.jwtConfig);
 
-            Assert.True(JWTokenValidator.ValidateTokenRole(validToken, MOQ_USER_ROLE, MoqConfigs.jwtConfig), "Valid token validation fail");
+            Assert.True(JWTokenValidator.IsTokenRoleValid(validToken, MOQ_USER_ROLE, MoqConfigs.jwtConfig), "Valid token validation fail");
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using DataAccessLayer.Entities;
 
 namespace DataAccessLayer.Migrations
 {
-    public partial class intial : Migration
+    public partial class ReInitial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,6 +29,7 @@ namespace DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Delivery = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -38,7 +40,6 @@ namespace DataAccessLayer.Migrations
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    Delivery = table.Column<string>(type: "nvarchar(256)", nullable: true),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
@@ -47,6 +48,32 @@ namespace DataAccessLayer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Genres",
+                columns: table => new
+                {
+                    GenreId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GenreName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Genres", x => x.GenreId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Platforms",
+                columns: table => new
+                {
+                    PlatformId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PlatformName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Platforms", x => x.PlatformId);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,6 +182,40 @@ namespace DataAccessLayer.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PlatformId = table.Column<int>(type: "int", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TotalRating = table.Column<int>(type: "int", nullable: true),
+                    GenreId = table.Column<int>(type: "int", nullable: true),
+                    AgeRating = table.Column<int>(type: "int", nullable: true),
+                    LogoLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BackgroundLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: true),
+                    Count = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "GenreId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_Platforms_PlatformId",
+                        column: x => x.PlatformId,
+                        principalTable: "Platforms",
+                        principalColumn: "PlatformId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -193,6 +254,54 @@ namespace DataAccessLayer.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_DateCreated",
+                table: "Products",
+                column: "DateCreated");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_GenreId",
+                table: "Products",
+                column: "GenreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_Name",
+                table: "Products",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_PlatformId",
+                table: "Products",
+                column: "PlatformId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_TotalRating",
+                table: "Products",
+                column: "TotalRating");
+            foreach(Platforms platform in Enum.GetValues(typeof(Platforms)))
+            {
+                migrationBuilder.InsertData("Platforms", "PlatformName", Platform.Name(platform));
+            }
+            /*migrationBuilder.InsertData("Platforms", "PlatformName", "Playstation");
+            migrationBuilder.InsertData("Platforms", "PlatformName", "Windows");
+            migrationBuilder.InsertData("Platforms", "PlatformName", "XBox");
+            migrationBuilder.InsertData("Platforms", "PlatformName", "IMac");
+            migrationBuilder.InsertData("Platforms", "PlatformName", "Linux");
+            migrationBuilder.InsertData("Platforms", "PlatformName", "Nintendo");*/
+            migrationBuilder.InsertData("Genres", "GenreName", "Shooter");
+            migrationBuilder.InsertData("Genres", "GenreName", "Strategy");
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Game1", 6, 9});
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Game2", 6, 9 });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Game3", 6, 9 });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Game4", 6, 9 });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Game5", 3, 9 });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Some1", 3, 9 });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Some2", 3, 9 });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Some3", 5, 9 });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Emag1", 5, 9 });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Emag2", 5, 9 });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "GaSo1", 5, 9 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -213,10 +322,19 @@ namespace DataAccessLayer.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Platforms");
         }
     }
 }

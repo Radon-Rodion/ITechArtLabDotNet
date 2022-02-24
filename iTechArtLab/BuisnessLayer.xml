@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BuisnessLayer</name>
+    </assembly>
+    <members>
+        <member name="P:BuisnessLayer.JWToken.JWTokenConfig.Issuer">
+            <summary>
+            Token issuer (producer)
+            </summary>
+            <example>AuthServer</example>
+        </member>
+        <member name="P:BuisnessLayer.JWToken.JWTokenConfig.Audience">
+            <summary>
+            Token consumer
+            </summary>
+            <example>AuthClient</example>
+        </member>
+        <member name="P:BuisnessLayer.JWToken.JWTokenConfig.Key">
+            <summary>
+            Sequrity key
+            </summary>
+            <example>secretKeyQWERTY123</example>
+        </member>
+        <member name="P:BuisnessLayer.JWToken.JWTokenConfig.Lifetime">
+            <summary>
+            token lifetime in minutes
+            </summary>
+            <example>100</example>
+        </member>
+        <member name="M:BuisnessLayer.JWToken.JWTokenGenerator.GenerateToken(System.String,System.String,BuisnessLayer.JWToken.JWTokenConfig)">
+            <summary>
+            Validates token role
+            </summary>
+            <param name="userName" example="AdminUser223">userName to be set into token</param>
+            <param name="userRole" example="Admin">role to be set into token</param>
+            <param name="config">JWT token configuration parameters</param>
+        </member>
+        <member name="M:BuisnessLayer.JWToken.JWTokenValidator.IsTokenRoleValid(System.String,System.String,BuisnessLayer.JWToken.JWTokenConfig)">
+            <summary>
+            Validates token role
+            </summary>
+            <param name="authToken" example="AAbdfkle95k2ls+91DgsS67jd">token to be validated</param>
+            <param name="role" example="Admin">role to be validated</param>
+            <param name="config">JWT token configuration parameters</param>
+        </member>
+    </members>
+</doc>

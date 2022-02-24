@@ -27,6 +27,12 @@ namespace BuisnessLayer.JWToken
             return claimsIdentity;
         }
 
+        /// <summary>
+        /// Validates token role
+        /// </summary>
+        /// <param name="userName" example="AdminUser223">userName to be set into token</param>
+        /// <param name="userRole" example="Admin">role to be set into token</param>
+        /// <param name="config">JWT token configuration parameters</param>
         public static string GenerateToken(string userName, string userRole, JWTokenConfig config)
         {
             var identity = GetClaimsIdentity(userName, userRole);

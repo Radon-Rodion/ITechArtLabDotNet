@@ -20,8 +20,8 @@ namespace TestProject.BusnessLogicTests
         [Fact]
         public void TestAccessValidateNegative()
         {
-            Assert.Throws<NullReferenceException>(() => AccessControlManager.ValidateAccess(null, out responseText));
-            Assert.False(AccessControlManager.ValidateAccess(context, out responseText));
+            Assert.Throws<NullReferenceException>(() => AccessControlManager.IsTokenValid(null, out responseText));
+            Assert.False(AccessControlManager.IsTokenValid(context, out responseText));
             Assert.Equal("Sign in first!", responseText);
             Assert.Equal(401, context.Response.StatusCode);
         }
@@ -32,10 +32,10 @@ namespace TestProject.BusnessLogicTests
             var token = JWTokenGenerator.GenerateToken("SomeName", "SomeRole", MoqConfigs.jwtConfig);
             SessionManager.SetToken(context.Session, token);
 
-            Assert.True(AccessControlManager.ValidateAccess(context, out responseText));
+            Assert.True(AccessControlManager.IsTokenValid(context, out responseText));
             Assert.Null(responseText);
 
-            Assert.False(AccessControlManager.ValidateAccess(context, out responseText, ROLE, MoqConfigs.jwtConfig));
+            Assert.False(AccessControlManager.IsTokenValid(context, out responseText, ROLE, MoqConfigs.jwtConfig));
             Assert.Equal("You are not admin!", responseText);
             Assert.Equal(403, context.Response.StatusCode);
         }
@@ -46,10 +46,10 @@ namespace TestProject.BusnessLogicTests
             var token = JWTokenGenerator.GenerateToken("SomeName", ROLE, MoqConfigs.jwtConfig);
             SessionManager.SetToken(context.Session, token);
 
-            Assert.True(AccessControlManager.ValidateAccess(context, out responseText));
+            Assert.True(AccessControlManager.IsTokenValid(context, out responseText));
             Assert.Null(responseText);
 
-            Assert.True(AccessControlManager.ValidateAccess(context, out responseText, ROLE, MoqConfigs.jwtConfig));
+            Assert.True(AccessControlManager.IsTokenValid(context, out responseText, ROLE, MoqConfigs.jwtConfig));
             Assert.Null(responseText);
         }
     }
