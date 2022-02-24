@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>iTechArtLab</name>
+    </assembly>
+    <members>
+        <member name="M:iTechArtLab.Controllers.AuthController.Index">
+            <summary>
+            Get request for all profiles info
+            </summary>
+            <remarks>/api/auth</remarks>
+            <response code="200">Stringifyed table with all accounts info</response>
+            <response code="401">Sign in required</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.AuthController.SignUp">
+            <summary>
+            Get request for sign-up page
+            </summary>
+            <remarks>/api/auth/sign-up</remarks>
+            <response code="200">SignUp View</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.AuthController.SignUp(DataAccessLayer.Models.SignUpViewModel)">
+            <summary>
+            Post request to sign-up new account
+            </summary>
+            <remarks>/api/auth/sign-up</remarks>
+            <response code="201">new account is created but still not activated</response>
+            <response code="400">View SignUp with errors messages</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.AuthController.SendConfirmationEmailAsync(DataAccessLayer.Entities.User)">
+            <summary>
+            email-sending method with auto-generated information to confirm email box
+            </summary>
+            <param name="user">user that will get email</param>
+            <remarks>Private</remarks>
+        </member>
+        <member name="M:iTechArtLab.Controllers.AuthController.ConfirmAcc(System.String,System.String)">
+            <summary>
+            Get request for email activation of new account
+            </summary>
+            <remarks>/api/auth/email-confirmation</remarks>
+            <param name="id" example="1342">confirming account id</param>
+            <param name="token" example="AAbdfkle95k2ls+91DgsS67jd">email confirmation token</param>
+            <response code="204">Account activated and message about activation is returned</response>
+            <response code="400">Error message</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.AuthController.SignIn">
+            <summary>
+            Get request for sign-in page
+            </summary>
+            <remarks>/api/auth/sign-in</remarks>
+            <response code="200">SignIn View</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.AuthController.SignIn(DataAccessLayer.Models.SignInViewModel)">
+            <summary>
+            Post request to sign-in account
+            </summary>
+            <remarks>/api/auth/sign-in</remarks>
+            <response code="200">JWT tolen is set into session and greeting message is returned</response>
+            <response code="401">View SignIn with errors messages</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.HomeController.GetInfo">
+            <summary>
+            Test method returning HelloWorld and available for admins only
+            </summary>
+            <remarks>/Home/GetInfo</remarks>
+            <response code="200">Hello world</response>
+            <response code="401">Sign in required</response>
+            <response code="403">Admin role required</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.ProductsController.TopPlatforms">
+            <summary>
+            Get request for 3 top platorms
+            </summary>
+            <remarks>/api/games/top-platforms</remarks>
+            <response code="200">View with Top-3 platforms</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.ProductsController.Search(System.String,System.Int32,System.Int32)">
+            <summary>
+            Get request for products(games) list containing entered term
+            </summary>
+            <remarks>/api/games/search</remarks>
+            <param name="term" example="Mon">products name filter</param>
+            <param name="limit" example="5">amount of products to be shown (may be less)</param>
+            <param name="offset" example="3">amount of products from start to be skipped</param>
+            <response code="200">View with Products(Games)</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.ProfileController.ProfileInfo">
+            <summary>
+            Get request for profile information page
+            </summary>
+            <remarks>/api/user</remarks>
+            <response code="200">View ProfileInfo with fields containing signed in profile information</response>
+            <response code="401">Sign in required</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.ProfileController.ProfileInfo(System.String,System.String,System.String,System.String)">
+            <summary>
+            Put request for profile info update
+            </summary>
+            <remarks>/api/user</remarks>
+            <param name="email" example="email11example@tut.by">New email</param>
+            <param name="userName" example="User009">New username</param>
+            <param name="delivery" example="Minsk, Dzerginskogo, 95/112">New delivery address</param>
+            <param name="phoneNumber" example="+7125678990">New phone number</param>
+            <response code="200">New(updated) profile info</response>
+            <response code="400">Errors list</response>
+            <response code="401">Sign in required</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.ProfileController.PasswordChange">
+            <summary>
+            Get request for password change page
+            </summary>
+            <remarks>/api/user/password</remarks>
+            <response code="200">View PasswordChange</response>
+            <response code="401">Sign in required</response>
+        </member>
+        <member name="M:iTechArtLab.Controllers.ProfileController.PatchPasswordChange(System.String,System.String,System.String)">
+            <summary>
+            Patch request for password changing
+            </summary>
+            <remarks>/api/user/password</remarks>
+            <param name="oldPassword" example="_123456OldPassword">Actual password of the account</param>
+            <param name="newPassword" example="_123456NewPassword">New password for the account</param>
+            <param name="newPasswordConfirm" example="_123456NewPassword">New password confirmation for the account. Must be equal to newPassword</param>
+            <response code="204">New password set, return "{}"</response>
+            <response code="400">Errors list</response>
+            <response code="401">Sign in required</response>
+        </member>
+    </members>
+</doc>

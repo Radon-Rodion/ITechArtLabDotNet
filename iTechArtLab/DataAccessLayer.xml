@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DataAccessLayer</name>
+    </assembly>
+    <members>
+        <member name="P:DataAccessLayer.Models.ChangePasswordViewModel.OldPassword">
+            <summary>
+            Password that is already set
+            </summary>
+            <remarks>Required</remarks>
+            <example>123456_Password</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ChangePasswordViewModel.NewPassword">
+            <summary>
+            New password to be set
+            </summary>
+            <remarks>Required</remarks>
+            <example>111_NewPassword</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ChangePasswordViewModel.NewPasswordConfirm">
+            <summary>
+            New password confirmation
+            </summary>
+            <remarks>Required, must be equal to NewPassword</remarks>
+            <example>111_NewPassword</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProductViewModel.ProductName">
+            <summary>
+            Name of the product(game)
+            </summary>
+            <remarks>Required</remarks>
+            <example>Monolite 5</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProductViewModel.PlatformId">
+            <summary>
+            Id of the product(game) platform
+            </summary>
+            <remarks>Required, numeric</remarks>
+            <example>1</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProductViewModel.TotalRating">
+            <summary>
+            Total rating (mark) of the product(game)
+            </summary>
+            <remarks>Not required, numeric</remarks>
+            <example>10</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProductViewModel.GenreId">
+            <summary>
+            Id of the product(game) genre
+            </summary>
+            <remarks>Required, numeric</remarks>
+            <example>3</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProductViewModel.AgeRating">
+            <summary>
+            Age rating of the product(game)
+            </summary>
+            <remarks>Not required, numeric</remarks>
+            <example>12</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProductViewModel.LogoLink">
+            <summary>
+            Link to the product(game) logo
+            </summary>
+            <remarks>Not required</remarks>
+            <example>https://link.com</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProductViewModel.BackgroundLink">
+            <summary>
+            Link to the product(game) background
+            </summary>
+            <remarks>Not required</remarks>
+            <example>https://link.com</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProductViewModel.Price">
+            <summary>
+            Price of the product(game) in $
+            </summary>
+            <remarks>Not required, numeric</remarks>
+            <example>20.5</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProductViewModel.Count">
+            <summary>
+            Count of the products(games)
+            </summary>
+            <remarks>Not required, numeric</remarks>
+            <example>23</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProfileViewModel.UserName">
+            <summary>
+            UserName of the profile
+            </summary>
+            <remarks>Required</remarks>
+            <example>User008</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProfileViewModel.Email">
+            <summary>
+            Email of the profile
+            </summary>
+            <remarks>Required</remarks>
+            <example>email01example@tut.by</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProfileViewModel.Delivery">
+            <summary>
+            Delivery address string of the profile
+            </summary>
+            <remarks>Not required</remarks>
+            <example>Minsk, Cheluskintsev, 18/21</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.ProfileViewModel.PhoneNumber">
+            <summary>
+            Phone number string of the profile
+            </summary>
+            <remarks>not required</remarks>
+            <example>+375251892399</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.SignInViewModel.Email">
+            <summary>
+            Email of signing in account
+            </summary>
+            <remarks>Required</remarks>
+            <example>email01example@tut.by</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.SignInViewModel.Password">
+            <summary>
+            Password to be veryfied
+            </summary>
+            <remarks>Required</remarks>
+            <example>_12345Password</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.SignInViewModel.RememberMe">
+            <summary>
+            Flag to remember account
+            </summary>
+            <remarks>Not required</remarks>
+            <example>false</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.SignUpViewModel.Email">
+            <summary>
+            Email of new account
+            </summary>
+            <remarks>Required</remarks>
+            <example>email01example@tut.by</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.SignUpViewModel.Password">
+            <summary>
+            Password for new account
+            </summary>
+            <remarks>Required</remarks>
+            <example>_12345Password</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.SignUpViewModel.PasswordConfirm">
+            <summary>
+            Password confirmation for new account
+            </summary>
+            <remarks>Required, must be equal to Password</remarks>
+            <example>_12345Password</example>
+        </member>
+    </members>
+</doc>
