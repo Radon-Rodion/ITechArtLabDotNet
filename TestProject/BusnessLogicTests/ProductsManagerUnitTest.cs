@@ -14,15 +14,16 @@ namespace TestProject.BusnessLogicTests
     {
         List<Platform> platforms = new List<Platform>();
         List<Product> products = new List<Product>();
+        ProductsManager productsManager = new ProductsManager();
 
         [Fact]
         public void TestTopPlatformsNegative()
         {
-            Assert.Throws<ArgumentNullException>(() => ProductsManager.Top3Platforms(null));
+            Assert.Throws<ArgumentNullException>(() => productsManager.GetTop3Platforms(null));
             var tempPlatforms = new List<Platform>();
-            Assert.Empty(ProductsManager.Top3Platforms(tempPlatforms));
+            Assert.Empty(productsManager.GetTop3Platforms(tempPlatforms));
             tempPlatforms.Add(new Platform() { PlatformId = 1, PlatformName = "Platform" });
-            Assert.Collection(ProductsManager.Top3Platforms(tempPlatforms), item =>
+            Assert.Collection(productsManager.GetTop3Platforms(tempPlatforms), item =>
             {
                 Assert.Equal(1, item.PlatformId);
                 Assert.Equal("Platform", item.PlatformName);
@@ -34,7 +35,7 @@ namespace TestProject.BusnessLogicTests
         {
             if (platforms.Count == 0) FillListsWithMoqData();
 
-            var topPlatforms = ProductsManager.Top3Platforms(platforms);
+            var topPlatforms = productsManager.GetTop3Platforms(platforms);
             Assert.Collection(topPlatforms, item =>
             {
                 Assert.Equal(5, item.PlatformId);
@@ -51,15 +52,15 @@ namespace TestProject.BusnessLogicTests
         [Fact]
         public void TestSearchNegative()
         {
-            Assert.Throws<ArgumentNullException>(() => ProductsManager.SearchByName(null, "", 1, 0));
+            Assert.Throws<ArgumentNullException>(() => productsManager.SearchByName(null, "", 1, 0));
 
             var tempProducts = new List<Product>();
 
-            Assert.Empty(ProductsManager.SearchByName(tempProducts, "", 1, 0));
+            Assert.Empty(productsManager.SearchByName(tempProducts, "", 1, 0));
             tempProducts.Add(new Product() { Id= 1, Name= "SomeName" });
 
-            Assert.Empty(ProductsManager.SearchByName(tempProducts, "", 0, 0));
-            Assert.Equal(1, ProductsManager.SearchByName(tempProducts, "", 10, 0).Count());
+            Assert.Empty(productsManager.SearchByName(tempProducts, "", 0, 0));
+            Assert.Equal(1, productsManager.SearchByName(tempProducts, "", 10, 0).Count());
         }
 
         [Fact]
@@ -67,7 +68,7 @@ namespace TestProject.BusnessLogicTests
         {
             if (platforms.Count == 0) FillListsWithMoqData();
 
-            Assert.Collection(ProductsManager.SearchByName(products, "1", 3, 1), item =>
+            Assert.Collection(productsManager.SearchByName(products, "1", 3, 1), item =>
             {
                 Assert.Equal("Game10", item.Name);
             }, item =>
@@ -78,7 +79,7 @@ namespace TestProject.BusnessLogicTests
                 Assert.Equal("Game12", item.Name);
             });
 
-            Assert.Collection(ProductsManager.SearchByName(products, "Game", 2,0), item =>
+            Assert.Collection(productsManager.SearchByName(products, "Game", 2,0), item =>
             {
                 Assert.Equal("Game1", item.Name);
             }, item =>

@@ -291,17 +291,17 @@ namespace DataAccessLayer.Migrations
             migrationBuilder.InsertData("Platforms", "PlatformName", "Nintendo");*/
             migrationBuilder.InsertData("Genres", "GenreName", "Shooter");
             migrationBuilder.InsertData("Genres", "GenreName", "Strategy");
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Game1", 6, 9});
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Game2", 6, 9 });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Game3", 6, 9 });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Game4", 6, 9 });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Game5", 3, 9 });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Some1", 3, 9 });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Some2", 3, 9 });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Some3", 5, 9 });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Emag1", 5, 9 });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "Emag2", 5, 9 });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating" }, new object[] { "GaSo1", 5, 9 });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Game1", 6, 9, DateTime.Now});
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Game2", 6, 9, DateTime.Now });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Game3", 6, 9, DateTime.Now });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Game4", 6, 9, DateTime.Now });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Game5", 3, 9, DateTime.Now });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Some1", 3, 9, DateTime.Now });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Some2", 3, 9, DateTime.Now });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Some3", 5, 9, DateTime.Now });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Emag1", 5, 9, DateTime.Now });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Emag2", 5, 9, DateTime.Now });
+            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "GaSo1", 5, 9, DateTime.Now });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

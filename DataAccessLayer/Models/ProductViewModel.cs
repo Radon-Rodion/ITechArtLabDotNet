@@ -4,11 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using DataAccessLayer.Entities;
 
 namespace DataAccessLayer.Models
 {
     public class ProductViewModel
     {
+        /// <summary>
+        /// Id of the product(game)
+        /// </summary>
+        /// <remarks>Not required, because must not be changed</remarks>
+        /// <example>5</example>
+        [Display(Name ="Id")]
+        public int Id { get; }
+
         /// <summary>
         /// Name of the product(game)
         /// </summary>
@@ -26,7 +35,8 @@ namespace DataAccessLayer.Models
         [Required]
         [RegularExpression(@"^[0-9]*$", ErrorMessage = "Must be numeric")]
         [Display(Name = "PlatformId")]
-        public string PlatformId { get; set; }
+        [EnumDataType(typeof(Platforms))]
+        public int PlatformId { get; set; }
 
         /// <summary>
         /// Total rating (mark) of the product(game)
@@ -35,7 +45,7 @@ namespace DataAccessLayer.Models
         /// <example>10</example>
         [RegularExpression(@"^[0-9]*$", ErrorMessage = "Must be numeric")]
         [Display(Name = "TotalRating")]
-        public string TotalRating { get; set; }
+        public int TotalRating { get; set; }
 
         /// <summary>
         /// Id of the product(game) genre
@@ -45,7 +55,7 @@ namespace DataAccessLayer.Models
         [Required]
         [RegularExpression(@"^[0-9]*$", ErrorMessage = "Must be numeric")]
         [Display(Name = "GenreId")]
-        public string GenreId { get; set; }
+        public int GenreId { get; set; }
 
         /// <summary>
         /// Age rating of the product(game)
@@ -54,7 +64,7 @@ namespace DataAccessLayer.Models
         /// <example>12</example>
         [RegularExpression(@"^[0-9]*$", ErrorMessage = "Must be numeric")]
         [Display(Name = "AgeRating")]
-        public string AgeRating { get; set; }
+        public int AgeRating { get; set; }
 
         /// <summary>
         /// Link to the product(game) logo
@@ -79,7 +89,7 @@ namespace DataAccessLayer.Models
         /// <example>20.5</example>
         [RegularExpression(@"^[0-9]*$", ErrorMessage = "Must be numeric")]
         [Display(Name = "Price")]
-        public string Price { get; set; }
+        public double Price { get; set; }
 
         /// <summary>
         /// Count of the products(games)
@@ -88,6 +98,26 @@ namespace DataAccessLayer.Models
         /// <example>23</example>
         [RegularExpression(@"^[0-9]*$", ErrorMessage = "Must be numeric")]
         [Display(Name = "Count")]
-        public string Count { get; set; }
+        public int Count { get; set; }
+
+        public ProductViewModel() { }
+
+        public ProductViewModel(int id) {
+            this.Id = id;
+        }
+
+        public ProductViewModel(Product product)
+        {
+            this.Id = product.Id;
+            this.ProductName = product.Name;
+            this.PlatformId = product.PlatformId ?? 0;
+            this.TotalRating = product.TotalRating ?? 0;
+            this.GenreId = product.GenreId ?? 0;
+            this.AgeRating = product.AgeRating ?? 0;
+            this.LogoLink = product.LogoLink;
+            this.BackgroundLink = product.BackgroundLink;
+            this.Price = product.Price ?? 0;
+            this.Count = product.Count ?? 0;
+        }
     }
 }

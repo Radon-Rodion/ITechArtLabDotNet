@@ -25,6 +25,13 @@
             <remarks>Required, must be equal to NewPassword</remarks>
             <example>111_NewPassword</example>
         </member>
+        <member name="P:DataAccessLayer.Models.ProductViewModel.Id">
+            <summary>
+            Id of the product(game)
+            </summary>
+            <remarks>Not required, because must not be changed</remarks>
+            <example>5</example>
+        </member>
         <member name="P:DataAccessLayer.Models.ProductViewModel.ProductName">
             <summary>
             Name of the product(game)

@@ -84,7 +84,32 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Count)
                 </td>
+                <td>
+                    <a href="id/@item.Id">Details</a>
+                </td>
+                <td>
+                    <button id="@item.Id">Delete</button>
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
+<script>
+    async function sendDeleteAsync(id) {
+        const response = await fetch(`/api/games/id/${id}`, {
+            method: 'delete',
+        });
+    }
+</script>
+
+@foreach (var item in Model)
+{
+<script>
+    document.getElementById("@item.Id").addEventListener("click", e => {
+            e.preventDefault();
+            sendDeleteAsync(@item.Id);
+        });
+</script>
+
+}

@@ -17,8 +17,8 @@ namespace TestProject.DataAcessLayerTests
             var validModel = new ProductViewModel()
             {
                 ProductName = "someName",
-                PlatformId = "1",
-                GenreId = "2"
+                PlatformId = 1,
+                GenreId = 2
             };
             var errorcount = ModelValidator.ValidateViewModel(validModel).Count();
             Assert.Equal(0, errorcount);
@@ -30,13 +30,12 @@ namespace TestProject.DataAcessLayerTests
             var modelWithout2Fields = new ProductViewModel()
             {
                 ProductName = "SomeName2",
-                TotalRating = "10",
-                AgeRating = "12",
+                TotalRating = 10,
+                AgeRating = 12,
                 LogoLink = "SomeLink1",
                 BackgroundLink = "SomeLink2",
-                Price = "21.3",
-                Count = "19"
-
+                Price = 21.3,
+                Count = 19
             };
             var errorcount = ModelValidator.ValidateViewModel(modelWithout2Fields).Count();
             Assert.Equal(2, errorcount);
