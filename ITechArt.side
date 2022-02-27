@@ -1950,17 +1950,6 @@
       ],
       "value": ""
     }, {
-      "id": "c14a4df1-79b1-4088-a59c-c5ff39db36ff",
-      "comment": "",
-      "command": "assertText",
-      "target": "css=td:nth-child(1)",
-      "targets": [
-        ["css=td:nth-child(1)", "css:finder"],
-        ["xpath=//td", "xpath:position"],
-        ["xpath=//td[contains(.,'KIHLIY')]", "xpath:innerText"]
-      ],
-      "value": "KIHLIY"
-    }, {
       "id": "cd47631e-c75c-4687-af63-f14df34c74c6",
       "comment": "",
       "command": "open",

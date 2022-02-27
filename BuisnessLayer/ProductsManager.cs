@@ -29,7 +29,7 @@ namespace BuisnessLayer
             return products.Where(p => p.DateCreated != null && p.Name.ToLower().Contains(namePart.ToLower())).Skip(offset).Take(limit);
         }
 
-        public async Task AddNewProductAsync(ApplicationDbContext context, ProductViewModel model, CloudinaryManager cloudinaryManager)
+        public async Task<Product> AddNewProductAsync(ApplicationDbContext context, ProductViewModel model, CloudinaryManager cloudinaryManager)
         {
             Product product = new Product()
             {
@@ -44,10 +44,10 @@ namespace BuisnessLayer
                 Price = System.Convert.ToInt32(model.Price),
                 Count = System.Convert.ToInt32(model.Count)
             };
-            Log.Logger.Error($"Name: {model.ProductName} Id:{product.Id}");
 
             context.Add(product);
             await context.SaveChangesAsync();
+            return product;
         }
 
         public async Task UpdateProductFromModelAsync(Product product, ProductViewModel model, ApplicationDbContext context, CloudinaryManager cloudinaryManager)

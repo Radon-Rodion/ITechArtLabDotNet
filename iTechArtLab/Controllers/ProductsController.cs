@@ -51,10 +51,10 @@ namespace iTechArtLab.Controllers
         /// <remarks>/api/games/top-platforms</remarks>
         /// <response code="200">View with Top-3 platforms</response>
         [HttpGet("top-platforms")]
-        public IActionResult TopPlatforms()
+        public IActionResult GetTopPlatforms()
         {
             var topPlatforms = _productsManager.GetTop3Platforms(_context.Platforms);
-            return View(topPlatforms.ToList());
+            return View("TopPlatforms", topPlatforms.ToList());
         }
 
         /// <summary>
@@ -66,12 +66,12 @@ namespace iTechArtLab.Controllers
         /// <param name="offset" example="3">amount of products from start to be skipped</param>
         /// <response code="200">View with Products(Games)</response>
         [HttpGet("search")]
-        public IActionResult Search(string term="", int limit=10, int offset=0)
+        public IActionResult SearchGames(string term="", int limit=10, int offset=0)
         {
             try
             {
                 var products = _productsManager.SearchByName(_context.Products, term ?? "", limit, offset);
-                return View(products.ToList());
+                return View("Search",products.ToList());
             } catch (Exception e)
             {
                 Log.Logger.Error(e.Message);
@@ -79,6 +79,13 @@ namespace iTechArtLab.Controllers
             }
         }
 
+        /// <summary>
+        /// Get request for product(game) information by its id
+        /// </summary>
+        /// <remarks>/api/games/id/{id}</remarks>
+        /// <param name="id" example="3">Id of the game</param>
+        /// <response code="200">View with Product(Game) full information</response>
+        /// <response code="404">No such game found</response>
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetInfo(int? id)
         {
@@ -98,17 +105,31 @@ namespace iTechArtLab.Controllers
             return View("Product",model);
         }
 
+        /// <summary>
+        /// Get request for createGameInfo form
+        /// </summary>
+        /// <remarks>/api/games</remarks>
+        /// <response code="200">View with CreateGameInfo form</response>
+        /// <response code="401">Sign in required</response>
+        /// <response code="403">Admin role required</response>
         [HttpGet]
-        public object Create()
+        public object GetCreateGameForm()
         {
             string errorResponse;
             if (!_accessControlManager.IsTokenValid(HttpContext, out errorResponse, _sessionManager,
                 _jWTokenValidator, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
-            return View();
+            return View("Create");
         }
 
+        /// <summary>
+        /// Post request to create new gameInfo
+        /// </summary>
+        /// <remarks>/api/games</remarks>
+        /// <response code="201">New game info successfully created</response>
+        /// <response code="401">Sign in required</response>
+        /// <response code="403">Admin role required</response>
         [HttpPost]
-        public async Task<object> Create(ProductViewModel model)
+        public async Task<object> CreateGameInfo(ProductViewModel model)
         {
             string errorResponse;
             if (!_accessControlManager.IsTokenValid(HttpContext, out errorResponse, _sessionManager,
@@ -116,14 +137,33 @@ namespace iTechArtLab.Controllers
 
             if (ModelState.IsValid)
             {
-                await _productsManager.AddNewProductAsync(_context, model, _cloudinaryManager);
-                return RedirectToAction(nameof(Search));
+                Product newProduct = await _productsManager.AddNewProductAsync(_context, model, _cloudinaryManager);
+                HttpContext.Response.StatusCode = 201;
+                return Json(newProduct);
             }
-            return View(model);
+            return View("Create", model);
         }
 
+        /// <summary>
+        /// Put request for game info update
+        /// </summary>
+        /// <remarks>/api/games</remarks>
+        /// <param name="id" example="9">Game id</param>
+        /// <param name="productName" example="Game1">new game name</param>
+        /// <param name="platformId" example="2">new platform id</param>
+        /// <param name="totalRating" example="90">new total rating</param>
+        /// <param name="genreId" example="1">new genre id</param>
+        /// <param name="ageRating" example="12">new age rating</param>
+        /// <param name="logoLink" example="p:\photo.png">new logo link (local or web)</param>
+        /// <param name="backgroundLink" example="http://someLink.com">new background link (local or web)</param>
+        /// <param name="price" example="12.5">new price</param>
+        /// <param name="count" example="23">new products amount</param>
+        /// <response code="200">New(updated) game info</response>
+        /// <response code="400">Errors during info validation</response>
+        /// <response code="401">Sign in required</response>
+        /// <response code="403">Admin role required</response>
         [HttpPut]
-        public async Task<object> Update(int id, string productName, int platformId,
+        public async Task<object> UpdateGameInfo(int id, string productName, int platformId,
             int totalRating, int genreId, int ageRating, string logoLink, string backgroundLink, int price, int count)
         {
             string errorResponse;
@@ -161,8 +201,17 @@ namespace iTechArtLab.Controllers
             return _modelValidator.StringifyErrors(modelErrors);
         }
 
+        /// <summary>
+        /// Delete request for product(game) information by its id
+        /// </summary>
+        /// <remarks>/api/games/id/{id}</remarks>
+        /// <param name="id" example="3">Id of the game</param>
+        /// <response code="204">Empty body</response>
+        /// <response code="401">Sign in required</response>
+        /// <response code="403">Admin role required</response>
+        /// <response code="404">No such game found</response>
         [HttpDelete("id/{id}")]
-        public async Task<object> Delete(int? id)
+        public async Task<object> DeleteGameInfo(int? id)
         {
             string errorResponse;
             if (!_accessControlManager.IsTokenValid(HttpContext, out errorResponse, _sessionManager,
@@ -177,7 +226,7 @@ namespace iTechArtLab.Controllers
             {
                 return NotFound($"Product with id {id} not found");
             }
-            await _productsManager.DeleteSoftAsync(product, _context);
+            await _productsManager.DeleteSoftAsync(product, _context); //Soft deleting
             HttpContext.Response.StatusCode = 204;
             return "{}";
         }

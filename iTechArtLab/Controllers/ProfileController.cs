@@ -45,14 +45,14 @@ namespace iTechArtLab.Controllers
         /// <response code="200">View ProfileInfo with fields containing signed in profile information</response>
         /// <response code="401">Sign in required</response>
         [HttpGet]
-        public async Task<object> ProfileInfo()
+        public async Task<object> GetProfileInfo()
         {
             string errorMessage;
             if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
 
             var user = await _userManager.FindByIdAsync(_sessionManager.GetUserId(HttpContext.Session).ToString());
             ProfileViewModel model = new ProfileViewModel() { UserName = user.UserName, Email = user.Email, Delivery = user.Delivery, PhoneNumber = user.PhoneNumber };
-            return View(model);
+            return View("ProfileInfo",model);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace iTechArtLab.Controllers
         /// <response code="400">Errors list</response>
         /// <response code="401">Sign in required</response>
         [HttpPut]
-        public async Task<object> ProfileInfo(string email, string userName, string delivery, string phoneNumber)
+        public async Task<object> PutProfileInfo(string email, string userName, string delivery, string phoneNumber)
         {
             string errorMessage;
             if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
@@ -113,11 +113,11 @@ namespace iTechArtLab.Controllers
         /// <response code="200">View PasswordChange</response>
         /// <response code="401">Sign in required</response>
         [HttpGet("password")]
-        public object PasswordChange()
+        public object GetPasswordChangeForm()
         {
             string errorMessage;
             if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
-            return View();
+            return View("PasswordChange");
         }
 
         /// <summary>
