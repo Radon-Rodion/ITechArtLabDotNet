@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Models;
 using DataAccessLayer.Data;
+using BuisnessLayer.Cloudinary;
 using Serilog;
 
 namespace BuisnessLayer
@@ -15,12 +16,12 @@ namespace BuisnessLayer
     {
         public IEnumerable<Platform> GetTop3Platforms(IQueryable<Platform> platforms)//ApplicationDbContext context
         {
-            return platforms.OrderByDescending(p => p.Products.Count).Take(3);
+            return platforms.OrderByDescending(p => p.Products.Where(prod => prod.DateCreated != null).Count()).Take(3);
         }
 
         public IEnumerable<Platform> GetTop3Platforms(IEnumerable<Platform> platforms)
         {
-            return platforms.OrderByDescending(p => p.Products.Count).Take(3);
+            return platforms.OrderByDescending(p => p.Products.Where(prod => prod.DateCreated != null).Count()).Take(3);
         }
 
         public IEnumerable<Product> SearchByName(IEnumerable<Product> products, string namePart, int limit, int offset)
@@ -28,7 +29,7 @@ namespace BuisnessLayer
             return products.Where(p => p.DateCreated != null && p.Name.ToLower().Contains(namePart.ToLower())).Skip(offset).Take(limit);
         }
 
-        public async Task AddNewProductAsync(ApplicationDbContext context, ProductViewModel model)
+        public async Task AddNewProductAsync(ApplicationDbContext context, ProductViewModel model, CloudinaryManager cloudinaryManager)
         {
             Product product = new Product()
             {
@@ -38,8 +39,8 @@ namespace BuisnessLayer
                 TotalRating = System.Convert.ToInt32(model.TotalRating),
                 GenreId = System.Convert.ToInt32(model.GenreId),
                 AgeRating = System.Convert.ToInt32(model.AgeRating),
-                LogoLink = model.LogoLink,
-                BackgroundLink = model.BackgroundLink,
+                LogoLink = cloudinaryManager.UploadImage(model.LogoLink),
+                BackgroundLink = cloudinaryManager.UploadImage(model.BackgroundLink),
                 Price = System.Convert.ToInt32(model.Price),
                 Count = System.Convert.ToInt32(model.Count)
             };
@@ -49,15 +50,15 @@ namespace BuisnessLayer
             await context.SaveChangesAsync();
         }
 
-        public async Task UpdateProductFromModelAsync(Product product, ProductViewModel model, ApplicationDbContext context)
+        public async Task UpdateProductFromModelAsync(Product product, ProductViewModel model, ApplicationDbContext context, CloudinaryManager cloudinaryManager)
         {
             product.Name = model.ProductName;
             product.PlatformId = model.PlatformId;
             product.TotalRating = model.TotalRating;
             product.GenreId = model.GenreId;
             product.AgeRating = model.AgeRating;
-            product.LogoLink = model.LogoLink;
-            product.BackgroundLink = model.BackgroundLink;
+            product.LogoLink = cloudinaryManager.UploadImage(model.LogoLink);
+            product.BackgroundLink = cloudinaryManager.UploadImage(model.BackgroundLink);
             product.Price = model.Price;
             product.Count = model.Count;
 

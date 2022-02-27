@@ -37,7 +37,7 @@ namespace BuisnessLayer.JWToken
             return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Key));
         }
 
-        public static SymmetricSecurityKey GetSymmetricSecurityKey(string key)
+        public SymmetricSecurityKey GetSymmetricSecurityKey(string key)
         {
             return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key));
         }

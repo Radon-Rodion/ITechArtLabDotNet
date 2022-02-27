@@ -19,8 +19,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BuisnessLayer.JWToken;
 using BuisnessLayer.Senders;
+using BuisnessLayer.Cloudinary;
 using DataAccessLayer.Entities;
 using System.IO;
+using BuisnessLayer;
 
 namespace iTechArtLab
 {
@@ -41,6 +43,14 @@ namespace iTechArtLab
 
             services.Configure<JWTokenConfig>(Configuration.GetSection("JWTokenConfig"));
             services.Configure<SmtpConfig>(Configuration.GetSection("SmtpConfig"));
+            services.Configure<CloudinaryConfig>(Configuration.GetSection("CloudinaryConfig"));
+
+            services.AddTransient<SessionManager>();
+            services.AddTransient<JWTokenValidator>();
+            services.AddTransient<JWTokenGenerator>();
+            services.AddTransient<AccessControlManager>();
+            services.AddTransient<ModelValidator>();
+            services.AddTransient<ProductsManager>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -67,7 +77,8 @@ namespace iTechArtLab
                             ValidateLifetime = true,
 
                             // sequrity key setting
-                            IssuerSigningKey = JWTokenConfig.GetSymmetricSecurityKey(Configuration.GetSection("JWTokenConfig").GetSection("Key").Value),
+                            IssuerSigningKey = (new JWTokenConfig())
+                                .GetSymmetricSecurityKey(Configuration.GetSection("JWTokenConfig").GetSection("Key").Value),
                             // sequrity key validation
                             ValidateIssuerSigningKey = true,
                         };

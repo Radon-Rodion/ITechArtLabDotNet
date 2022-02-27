@@ -12,7 +12,7 @@ namespace BuisnessLayer.JWToken
 {
     public class JWTokenGenerator
     {
-        private static ClaimsIdentity GetClaimsIdentity(string userName, string userRole)
+        private ClaimsIdentity GetClaimsIdentity(string userName, string userRole)
         {
             if (userName == null || userRole == null) throw new ArgumentNullException("userName or/and userRole");
 
@@ -33,7 +33,7 @@ namespace BuisnessLayer.JWToken
         /// <param name="userName" example="AdminUser223">userName to be set into token</param>
         /// <param name="userRole" example="Admin">role to be set into token</param>
         /// <param name="config">JWT token configuration parameters</param>
-        public static string GenerateToken(string userName, string userRole, JWTokenConfig config)
+        public string GenerateToken(string userName, string userRole, JWTokenConfig config)
         {
             var identity = GetClaimsIdentity(userName, userRole);
 

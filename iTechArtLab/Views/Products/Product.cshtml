@@ -41,11 +41,13 @@
                 <label asp-for="LogoLink" class="control-label"></label>
                 <input asp-for="LogoLink" class="form-control" id="logoLink"/>
                 <span asp-validation-for="LogoLink" class="text-danger"></span>
+                <img src="@Model.LogoLink" alt="No Image" id="logoImg"/>
             </div>
             <div class="form-group">
                 <label asp-for="BackgroundLink" class="control-label"></label>
-                <input asp-for="BackgroundLink" class="form-control" id="backgroundLink"/>
+                <input asp-for="BackgroundLink" class="form-control" id="backgroundLink" />
                 <span asp-validation-for="BackgroundLink" class="text-danger"></span>
+                <img src="@Model.BackgroundLink" alt="No Image" id="backImg" />
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
@@ -86,7 +88,7 @@
         formData.append('price', document.getElementById("price").value);
         formData.append('count', document.getElementById("count").value);
 
-        const response = await fetch("/api/user", {
+        const response = await fetch("/api/games", {
             method: 'put',
             headers: { "Accept": "application/json" },
             body: formData
@@ -94,16 +96,16 @@
         const data = await response.json();
 
         if (response.ok === true) {
-            document.getElementById("id").value = data.Id;
-            document.getElementById("productName").value = data.Name;
-            document.getElementById("platformId").value = data.PlatformId;
-            document.getElementById("totalRating").value = data.TotalRating;
-            document.getElementById("genreId").value = data.GenreId;
-            document.getElementById("ageRating").value = data.AgeRating;
-            document.getElementById("logoLink").value = data.LogoLink;
-            document.getElementById("backgroundLink").value = data.BackgroundLink;
-            document.getElementById("price").value = data.Price;
-            document.getElementById("count").value = data.Count;
+            document.getElementById("id").value = data.id;
+            document.getElementById("productName").value = data.name;
+            document.getElementById("platformId").value = data.platformId;
+            document.getElementById("totalRating").value = data.totalRating;
+            document.getElementById("genreId").value = data.genreId;
+            document.getElementById("ageRating").value = data.ageRating;
+            document.getElementById("logoLink").value = data.logoLink;
+            document.getElementById("backgroundLink").value = data.backgroundLink;
+            document.getElementById("price").value = data.price;
+            document.getElementById("count").value = data.count;
         }
     }
     document.getElementById("submitBtn").addEventListener("click", e => {

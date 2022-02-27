@@ -57,7 +57,7 @@ namespace TestProject.BusnessLogicTests
             var tempProducts = new List<Product>();
 
             Assert.Empty(productsManager.SearchByName(tempProducts, "", 1, 0));
-            tempProducts.Add(new Product() { Id= 1, Name= "SomeName" });
+            tempProducts.Add(new Product() { Id= 1, Name= "SomeName", DateCreated = DateTime.Now });
 
             Assert.Empty(productsManager.SearchByName(tempProducts, "", 0, 0));
             Assert.Equal(1, productsManager.SearchByName(tempProducts, "", 10, 0).Count());
@@ -66,7 +66,7 @@ namespace TestProject.BusnessLogicTests
         [Fact]
         public void TestSearchPositive()
         {
-            if (platforms.Count == 0) FillListsWithMoqData();
+            if (products.Count == 0) FillListsWithMoqData();
 
             Assert.Collection(productsManager.SearchByName(products, "1", 3, 1), item =>
             {
@@ -91,44 +91,44 @@ namespace TestProject.BusnessLogicTests
         private void FillListsWithMoqData()
         {
             Platform newPlatform = new Platform() { PlatformId = 1, PlatformName = "Platform1" };
-            Product newProduct = new Product() { Id = 1, Name = "Game1", PlatformId = 1 };
+            Product newProduct = new Product() { Id = 1, Name = "Game1", PlatformId = 1, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
 
-            newProduct = new Product() { Id = 2, Name = "Game2", PlatformId = 1 };
+            newProduct = new Product() { Id = 2, Name = "Game2", PlatformId = 1, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
 
-            newProduct = new Product() { Id = 3, Name = "Game3", PlatformId = 1 };
+            newProduct = new Product() { Id = 3, Name = "Game3", PlatformId = 1, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
             platforms.Add(newPlatform);
 
 
             newPlatform = new Platform() { PlatformId = 2, PlatformName = "Platform2" };
-            newProduct = new Product() { Id = 4, Name = "Game4", PlatformId = 2 };
+            newProduct = new Product() { Id = 4, Name = "Game4", PlatformId = 2, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
 
-            newProduct = new Product() { Id = 5, Name = "Game5", PlatformId = 2 };
+            newProduct = new Product() { Id = 5, Name = "Game5", PlatformId = 2, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
             platforms.Add(newPlatform);
 
             newPlatform = new Platform() { PlatformId = 3, PlatformName = "Platform3" };
-            newProduct = new Product() { Id = 6, Name = "Game6", PlatformId = 3 };
+            newProduct = new Product() { Id = 6, Name = "Game6", PlatformId = 3, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
 
-            newProduct = new Product() { Id = 7, Name = "Game7", PlatformId = 3 };
+            newProduct = new Product() { Id = 7, Name = "Game7", PlatformId = 3, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
 
-            newProduct = new Product() { Id = 8, Name = "Game8", PlatformId = 3 };
+            newProduct = new Product() { Id = 8, Name = "Game8", PlatformId = 3, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
 
-            newProduct = new Product() { Id = 9, Name = "Game9", PlatformId = 3 };
+            newProduct = new Product() { Id = 9, Name = "Game9", PlatformId = 3, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
             platforms.Add(newPlatform);
@@ -136,23 +136,23 @@ namespace TestProject.BusnessLogicTests
             platforms.Add(new Platform() { PlatformId = 4, PlatformName = "Platform4" });
 
             newPlatform = new Platform() { PlatformId = 5, PlatformName = "Platform5" };
-            newProduct = new Product() { Id = 10, Name = "Game10", PlatformId = 5 };
+            newProduct = new Product() { Id = 10, Name = "Game10", PlatformId = 5, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
 
-            newProduct = new Product() { Id = 11, Name = "Game11", PlatformId = 5 };
+            newProduct = new Product() { Id = 11, Name = "Game11", PlatformId = 5, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
 
-            newProduct = new Product() { Id = 12, Name = "Game12", PlatformId = 5 };
+            newProduct = new Product() { Id = 12, Name = "Game12", PlatformId = 5, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
 
-            newProduct = new Product() { Id = 13, Name = "Game13", PlatformId = 5 };
+            newProduct = new Product() { Id = 13, Name = "Game13", PlatformId = 5, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
 
-            newProduct = new Product() { Id = 14, Name = "Game14", PlatformId = 5 };
+            newProduct = new Product() { Id = 14, Name = "Game14", PlatformId = 5, DateCreated = DateTime.Now };
             products.Add(newProduct);
             newPlatform.Products.Add(newProduct);
             platforms.Add(newPlatform);

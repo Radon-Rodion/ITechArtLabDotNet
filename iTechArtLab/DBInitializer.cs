@@ -24,7 +24,7 @@ namespace iTechArtLab
 
             string adminEmail = "admin@gmail.com";
             string password = "_Aa123456";
-            if (await userManager.FindByNameAsync(adminEmail) == null)
+            if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
                 var admin = new User { Email = adminEmail, UserName = adminEmail };
                 IdentityResult result = await userManager.CreateAsync(admin, password);

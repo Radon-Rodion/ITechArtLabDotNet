@@ -9,6 +9,9 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Models;
 using BuisnessLayer;
+using BuisnessLayer.Cloudinary;
+using BuisnessLayer.JWToken;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace iTechArtLab.Controllers
@@ -17,12 +20,29 @@ namespace iTechArtLab.Controllers
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly ProductsManager productsManager;
+        private readonly ProductsManager _productsManager;
+        private readonly ModelValidator _modelValidator;
+        private readonly CloudinaryManager _cloudinaryManager;
+        private readonly JWTokenConfig _jWTokenConfig;
+        private readonly AccessControlManager _accessControlManager;
+        private readonly SessionManager _sessionManager;
+        private readonly JWTokenValidator _jWTokenValidator;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, SessionManager sessionManager, ProductsManager productsManager,
+            JWTokenValidator jWTokenValidator, AccessControlManager accessControlManager, ModelValidator modelValidator,
+            IOptions<JWTokenConfig> jWTokenOptions, IOptions<CloudinaryConfig> cloudinaryOptions)
         {
             _context = context;
-            productsManager = new ProductsManager();
+            _jWTokenConfig = jWTokenOptions.Value;
+
+            _productsManager = productsManager;
+            _modelValidator = modelValidator;
+            _cloudinaryManager = new CloudinaryManager
+                (cloudinaryOptions.Value.ApiKey, cloudinaryOptions.Value.ApiSecret, cloudinaryOptions.Value.CloudName);
+
+            _sessionManager = sessionManager;
+            _jWTokenValidator = jWTokenValidator;
+            _accessControlManager = accessControlManager;
         }
 
         /// <summary>
@@ -33,7 +53,7 @@ namespace iTechArtLab.Controllers
         [HttpGet("top-platforms")]
         public IActionResult TopPlatforms()
         {
-            var topPlatforms = productsManager.GetTop3Platforms(_context.Platforms);
+            var topPlatforms = _productsManager.GetTop3Platforms(_context.Platforms);
             return View(topPlatforms.ToList());
         }
 
@@ -50,7 +70,7 @@ namespace iTechArtLab.Controllers
         {
             try
             {
-                var products = productsManager.SearchByName(_context.Products, term ?? "", limit, offset);
+                var products = _productsManager.SearchByName(_context.Products, term ?? "", limit, offset);
                 return View(products.ToList());
             } catch (Exception e)
             {
@@ -79,17 +99,24 @@ namespace iTechArtLab.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public object Create()
         {
+            string errorResponse;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorResponse, _sessionManager,
+                _jWTokenValidator, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ProductViewModel model)
+        public async Task<object> Create(ProductViewModel model)
         {
+            string errorResponse;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorResponse, _sessionManager,
+                _jWTokenValidator, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
+
             if (ModelState.IsValid)
             {
-                await productsManager.AddNewProductAsync(_context, model);
+                await _productsManager.AddNewProductAsync(_context, model, _cloudinaryManager);
                 return RedirectToAction(nameof(Search));
             }
             return View(model);
@@ -99,6 +126,10 @@ namespace iTechArtLab.Controllers
         public async Task<object> Update(int id, string productName, int platformId,
             int totalRating, int genreId, int ageRating, string logoLink, string backgroundLink, int price, int count)
         {
+            string errorResponse;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorResponse, _sessionManager,
+                _jWTokenValidator, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
+
             var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
@@ -118,21 +149,25 @@ namespace iTechArtLab.Controllers
                 Count = count
             };
 
-            var modelErrors = ModelValidator.ValidateViewModel(model);
+            var modelErrors = _modelValidator.ValidateViewModel(model);
 
             if (modelErrors.Count == 0)
             {
-                await productsManager.UpdateProductFromModelAsync(product, model, _context);
+                await _productsManager.UpdateProductFromModelAsync(product, model, _context, _cloudinaryManager);
                 return Json(product);
             }
 
             HttpContext.Response.StatusCode = 400;
-            return ModelValidator.StringifyErrors(modelErrors);
+            return _modelValidator.StringifyErrors(modelErrors);
         }
 
         [HttpDelete("id/{id}")]
         public async Task<object> Delete(int? id)
         {
+            string errorResponse;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorResponse, _sessionManager,
+                _jWTokenValidator, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
+
             if (id == null)
             {
                 return NotFound("Didn't got id");
@@ -142,7 +177,7 @@ namespace iTechArtLab.Controllers
             {
                 return NotFound($"Product with id {id} not found");
             }
-            await productsManager.DeleteSoftAsync(product, _context);
+            await _productsManager.DeleteSoftAsync(product, _context);
             HttpContext.Response.StatusCode = 204;
             return "{}";
         }

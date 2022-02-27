@@ -13,6 +13,8 @@ namespace TestProject.DataAcessLayerTests
 {
     public class ViewModelsUnitTest
     {
+        ModelValidator modelValidator = new ModelValidator();
+
         [Fact]
         public void SignInViewModelPositiveTest()
         {
@@ -21,7 +23,7 @@ namespace TestProject.DataAcessLayerTests
                 Email = "some00email@gmail.com",
                 Password="Qwerty123"
             };
-            var errorcount = ModelValidator.ValidateViewModel(validModel).Count();
+            var errorcount = modelValidator.ValidateViewModel(validModel).Count();
             Assert.Equal(0, errorcount);
         }
 
@@ -32,7 +34,7 @@ namespace TestProject.DataAcessLayerTests
             {
                 RememberMe = true
             };
-            var errorcount = ModelValidator.ValidateViewModel(modelWithout2Fields).Count();
+            var errorcount = modelValidator.ValidateViewModel(modelWithout2Fields).Count();
             Assert.Equal(2, errorcount);
         }
 
@@ -45,7 +47,7 @@ namespace TestProject.DataAcessLayerTests
                 Password = "Qwerty123",
                 PasswordConfirm = "Qwerty123"
             };
-            var errorcount = ModelValidator.ValidateViewModel(validModel).Count();
+            var errorcount = modelValidator.ValidateViewModel(validModel).Count();
             Assert.Equal(0, errorcount);
         }
 
@@ -57,7 +59,7 @@ namespace TestProject.DataAcessLayerTests
                 Email = "some00email@gmail.com",
                 Password = "Qwerty123"
             };
-            var errorcount = ModelValidator.ValidateViewModel(modelWithout1Field).Count();
+            var errorcount = modelValidator.ValidateViewModel(modelWithout1Field).Count();
             Assert.Equal(1, errorcount);
         }
 
@@ -70,7 +72,7 @@ namespace TestProject.DataAcessLayerTests
                 UserName = "Arkadyj",
                 Delivery = "Homel, Sovetskaya 14/21"
             };
-            var errorcount = ModelValidator.ValidateViewModel(validModel).Count();
+            var errorcount = modelValidator.ValidateViewModel(validModel).Count();
             Assert.Equal(0, errorcount);
         }
 
@@ -82,7 +84,7 @@ namespace TestProject.DataAcessLayerTests
                 Email = "some00email@gmail.com",
                 PhoneNumber = "+375336512314"
             };
-            var errorcount = ModelValidator.ValidateViewModel(modelWithout1Field).Count();
+            var errorcount = modelValidator.ValidateViewModel(modelWithout1Field).Count();
             Assert.Equal(1, errorcount);
 
             var modelWithout2Fields = new ProfileViewModel
@@ -91,7 +93,7 @@ namespace TestProject.DataAcessLayerTests
                 PhoneNumber = "+375336512314"
             };
 
-            errorcount = ModelValidator.ValidateViewModel(modelWithout2Fields).Count();
+            errorcount = modelValidator.ValidateViewModel(modelWithout2Fields).Count();
             Assert.Equal(2, errorcount);
         }
 
@@ -104,7 +106,7 @@ namespace TestProject.DataAcessLayerTests
                 NewPassword = "_Test123456",
                 NewPasswordConfirm = "_Test123456",
             };
-            var errorcount = ModelValidator.ValidateViewModel(validModel).Count();
+            var errorcount = modelValidator.ValidateViewModel(validModel).Count();
             Assert.Equal(0, errorcount);
         }
 
@@ -116,7 +118,7 @@ namespace TestProject.DataAcessLayerTests
                 OldPassword = "123456_Test",
                 NewPassword = "_Test123456",
             };
-            var errorcount = ModelValidator.ValidateViewModel(modelWithout1Field).Count();
+            var errorcount = modelValidator.ValidateViewModel(modelWithout1Field).Count();
             Assert.Equal(1, errorcount);
 
             var modelWithout2Fields = new ChangePasswordViewModel
@@ -124,7 +126,7 @@ namespace TestProject.DataAcessLayerTests
                 NewPassword = "_Test123456",
             };
 
-            errorcount = ModelValidator.ValidateViewModel(modelWithout2Fields).Count();
+            errorcount = modelValidator.ValidateViewModel(modelWithout2Fields).Count();
             Assert.Equal(2, errorcount);
         }
     }
