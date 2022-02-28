@@ -19,11 +19,23 @@ namespace iTechArtLab.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly JWTokenConfig _jWTokenConfig;
+        private readonly ModelValidator _modelValidator;
+        private readonly AccessControlManager _accessControlManager;
+        private readonly SessionManager _sessionManager;
+        private readonly JWTokenGenerator _jWTokenGenerator;
+        private readonly JWTokenValidator _jWTokenValidator;
 
-        public ProfileController(UserManager<User> userManager, IOptions<JWTokenConfig> jWTokenOptions)
+        public ProfileController(UserManager<User> userManager, IOptions<JWTokenConfig> jWTokenOptions, SessionManager sessionManager,
+            JWTokenValidator jWTokenValidator, JWTokenGenerator jWTokenGenerator, AccessControlManager accessControlManager, ModelValidator modelValidator)
         {
             _userManager = userManager;
             _jWTokenConfig = jWTokenOptions.Value;
+
+            _modelValidator = modelValidator;
+            _sessionManager = sessionManager;
+            _jWTokenValidator = jWTokenValidator;
+            _jWTokenGenerator = jWTokenGenerator;
+            _accessControlManager = accessControlManager;
         }
 
         /// <summary>
@@ -33,14 +45,14 @@ namespace iTechArtLab.Controllers
         /// <response code="200">View ProfileInfo with fields containing signed in profile information</response>
         /// <response code="401">Sign in required</response>
         [HttpGet]
-        public async Task<object> ProfileInfo()
+        public async Task<object> GetProfileInfo()
         {
             string errorMessage;
-            if (!AccessControlManager.IsTokenValid(HttpContext, out errorMessage)) return errorMessage;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
 
-            var user = await _userManager.FindByIdAsync(SessionManager.GetUserId(HttpContext.Session).ToString());
+            var user = await _userManager.FindByIdAsync(_sessionManager.GetUserId(HttpContext.Session).ToString());
             ProfileViewModel model = new ProfileViewModel() { UserName = user.UserName, Email = user.Email, Delivery = user.Delivery, PhoneNumber = user.PhoneNumber };
-            return View(model);
+            return View("ProfileInfo",model);
         }
 
         /// <summary>
@@ -55,17 +67,17 @@ namespace iTechArtLab.Controllers
         /// <response code="400">Errors list</response>
         /// <response code="401">Sign in required</response>
         [HttpPut]
-        public async Task<object> ProfileInfo(string email, string userName, string delivery, string phoneNumber)
+        public async Task<object> PutProfileInfo(string email, string userName, string delivery, string phoneNumber)
         {
             string errorMessage;
-            if (!AccessControlManager.IsTokenValid(HttpContext, out errorMessage)) return errorMessage;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
 
             var model = new ProfileViewModel() { UserName = userName, Email = email, Delivery = delivery, PhoneNumber = phoneNumber };
-            var modelErrors = ModelValidator.ValidateViewModel(model);
+            var modelErrors = _modelValidator.ValidateViewModel(model);
 
             if (modelErrors.Count == 0)
             {
-                var user = await _userManager.FindByIdAsync(SessionManager.GetUserId(HttpContext.Session).ToString());
+                var user = await _userManager.FindByIdAsync(_sessionManager.GetUserId(HttpContext.Session).ToString());
                 user.Email = email;
                 user.UserName = userName;
                 user.PhoneNumber = phoneNumber;
@@ -75,7 +87,7 @@ namespace iTechArtLab.Controllers
                 if (result.Succeeded)
                 {
                     var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
-                    SessionManager.SetToken(HttpContext.Session, JWTokenGenerator.GenerateToken(user?.Email, userRole, _jWTokenConfig));
+                    _sessionManager.SetToken(HttpContext.Session, _jWTokenGenerator.GenerateToken(user?.Email, userRole, _jWTokenConfig));
                     return Json(new { email = user.Email, userName = user.UserName, delivery = user.Delivery, phoneNumber = user.PhoneNumber });
                 }
                 else
@@ -91,7 +103,7 @@ namespace iTechArtLab.Controllers
                 }
             }
             HttpContext.Response.StatusCode = 400;
-            return ModelValidator.StringifyErrors(modelErrors);
+            return _modelValidator.StringifyErrors(modelErrors);
         }
 
         /// <summary>
@@ -101,11 +113,11 @@ namespace iTechArtLab.Controllers
         /// <response code="200">View PasswordChange</response>
         /// <response code="401">Sign in required</response>
         [HttpGet("password")]
-        public object PasswordChange()
+        public object GetPasswordChangeForm()
         {
             string errorMessage;
-            if (!AccessControlManager.IsTokenValid(HttpContext, out errorMessage)) return errorMessage;
-            return View();
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
+            return View("PasswordChange");
         }
 
         /// <summary>
@@ -122,14 +134,14 @@ namespace iTechArtLab.Controllers
         public async Task<object> PatchPasswordChange(string oldPassword, string newPassword, string newPasswordConfirm)
         {
             string errorMessage;
-            if (!AccessControlManager.IsTokenValid(HttpContext, out errorMessage)) return errorMessage;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
 
             var model = new ChangePasswordViewModel() { OldPassword = oldPassword, NewPassword = newPassword, NewPasswordConfirm = newPasswordConfirm };
-            var modelErrors = ModelValidator.ValidateViewModel(model);
+            var modelErrors = _modelValidator.ValidateViewModel(model);
 
             if (modelErrors.Count == 0)
             {
-                var user = await _userManager.FindByIdAsync(SessionManager.GetUserId(HttpContext.Session).ToString());
+                var user = await _userManager.FindByIdAsync(_sessionManager.GetUserId(HttpContext.Session).ToString());
 
                 var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)
@@ -151,7 +163,7 @@ namespace iTechArtLab.Controllers
                 }
             }
             HttpContext.Response.StatusCode = 400;
-            return ModelValidator.StringifyErrors(modelErrors);
+            return _modelValidator.StringifyErrors(modelErrors);
         }
     }
 }

@@ -12,6 +12,7 @@ using System.Text;
 using BuisnessLayer.JWToken;
 using BuisnessLayer.Senders;
 using BuisnessLayer;
+using DataAccessLayer.Data;
 
 
 namespace iTechArtLab.Controllers
@@ -24,14 +25,25 @@ namespace iTechArtLab.Controllers
         private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly SmtpConfig _smtpConfig;
         private readonly JWTokenConfig _jWTokenConfig;
+        private readonly AccessControlManager _accessControlManager;
+        private readonly SessionManager _sessionManager;
+        private readonly JWTokenGenerator _jWTokenGenerator;
+        private readonly JWTokenValidator _jWTokenValidator;
 
-        public AuthController(RoleManager<IdentityRole<int>> roleManager, UserManager<User> userManager, IOptions<SmtpConfig> smtpOptions, IOptions<JWTokenConfig> jWTokenOptions)
+        public AuthController(RoleManager<IdentityRole<int>> roleManager, UserManager<User> userManager, SessionManager sessionManager,
+            JWTokenValidator jWTokenValidator, JWTokenGenerator jWTokenGenerator, AccessControlManager accessControlManager,
+            IOptions<SmtpConfig> smtpOptions, IOptions<JWTokenConfig> jWTokenOptions)
         {
             _userManager = userManager;
             //_signInManager = signInManager;
             _roleManager = roleManager;
             _smtpConfig = smtpOptions.Value;
             _jWTokenConfig = jWTokenOptions.Value;
+
+            _sessionManager = sessionManager;
+            _jWTokenValidator = jWTokenValidator;
+            _jWTokenGenerator = jWTokenGenerator;
+            _accessControlManager = accessControlManager;
             DBInitializer.InitializeAsync(_userManager, _roleManager).Wait();
         }
 
@@ -45,10 +57,10 @@ namespace iTechArtLab.Controllers
         public async Task<string> Index() //shows all accs info
         {
             string errorMessage;
-            if (!AccessControlManager.IsTokenValid(HttpContext, out errorMessage)) return errorMessage;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
 
             var result = new StringBuilder($"Email : UserName : EmailConfirmed : Is admin : PasswordHash\n");
-            foreach (var user in _userManager.Users) result.Append($"{user.Email} : {user.UserName} : {user.EmailConfirmed} : {(await _userManager.GetRolesAsync(user)).Any(e => e== "admin")} : {user.PasswordHash}\n");
+            foreach (var user in _userManager.Users) result.Append($"{user.Email} : {user.UserName} : {user.EmailConfirmed} : {(await _userManager.GetRolesAsync(user)).Any(e => e== Role.Name(Roles.Admin))} : {user.PasswordHash}\n");
             return result.ToString();
         }
 
@@ -185,8 +197,8 @@ namespace iTechArtLab.Controllers
                 else
                 {
                     var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
-                    SessionManager.SetToken(HttpContext.Session, JWTokenGenerator.GenerateToken(user?.Email, userRole, _jWTokenConfig));
-                    SessionManager.SetUserId(HttpContext.Session, user.Id);
+                    _sessionManager.SetToken(HttpContext.Session, _jWTokenGenerator.GenerateToken(user?.Email, userRole, _jWTokenConfig));
+                    _sessionManager.SetUserId(HttpContext.Session, user.Id);
                     return Ok($"Glad to see you, {user.UserName} !");
                 }
             }

@@ -9,7 +9,7 @@ namespace BuisnessLayer
 {
     public class ModelValidator
     {
-        public static IList<ValidationResult> ValidateViewModel(object model)
+        public IList<ValidationResult> ValidateViewModel(object model)
         {
             var result = new List<ValidationResult>();
             var validationContext = new ValidationContext(model);
@@ -19,7 +19,7 @@ namespace BuisnessLayer
             return result;
         }
 
-        public static string StringifyErrors(IList<ValidationResult> errors)
+        public string StringifyErrors(IList<ValidationResult> errors)
         {
             StringBuilder errorsString = new StringBuilder("");
             foreach (var error in errors)

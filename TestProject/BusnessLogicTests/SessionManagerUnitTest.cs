@@ -14,18 +14,19 @@ namespace TestProject.BuisnessLogicTests
     {
         MoqSession moqSession = new MoqSession();
         const string MOQ_TOKEN = "MoqJWToken12_0 ";
+        SessionManager sessionManager = new SessionManager();
 
         [Fact]
         public void TestSettingNegative()
         {
-            Assert.Throws<NullReferenceException>(() => SessionManager.SetToken(null, MOQ_TOKEN));
-            Assert.Throws<ArgumentNullException>(() => SessionManager.SetToken(moqSession, null));
+            Assert.Throws<NullReferenceException>(() => sessionManager.SetToken(null, MOQ_TOKEN));
+            Assert.Throws<ArgumentNullException>(() => sessionManager.SetToken(moqSession, null));
         }
 
         [Fact]
         public void TestSettingPositive()
         {
-            SessionManager.SetToken(moqSession, MOQ_TOKEN);
+            sessionManager.SetToken(moqSession, MOQ_TOKEN);
 
             var moqSessionKeysEnumerator = moqSession.Keys.GetEnumerator();
             moqSessionKeysEnumerator.MoveNext(); //to get first key in moqSession
@@ -40,12 +41,12 @@ namespace TestProject.BuisnessLogicTests
         public void TestGetting()
         {
             moqSession.Clear();
-            Assert.False(SessionManager.HasToken(moqSession), "Session manager HasToken method finds non-existing token");
-            Assert.Throws<ArgumentNullException>(() => SessionManager.GetToken(moqSession));
+            Assert.False(sessionManager.HasToken(moqSession), "Session manager HasToken method finds non-existing token");
+            Assert.Throws<ArgumentNullException>(() => sessionManager.GetToken(moqSession));
 
-            SessionManager.SetToken(moqSession, MOQ_TOKEN);
-            Assert.True(SessionManager.HasToken(moqSession), "Session manager HasToken method can't find existing token");
-            Assert.True(SessionManager.GetToken(moqSession) == MOQ_TOKEN, "Got invalid token from session");
+            sessionManager.SetToken(moqSession, MOQ_TOKEN);
+            Assert.True(sessionManager.HasToken(moqSession), "Session manager HasToken method can't find existing token");
+            Assert.True(sessionManager.GetToken(moqSession) == MOQ_TOKEN, "Got invalid token from session");
         }
     }
 }

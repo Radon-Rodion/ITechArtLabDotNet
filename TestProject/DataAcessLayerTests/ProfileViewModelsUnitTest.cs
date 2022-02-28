@@ -11,35 +11,34 @@ namespace TestProject.DataAcessLayerTests
 {
     public class ProfileViewModelsUnitTest
     {
+        ModelValidator modelValidator = new ModelValidator();
         [Fact]
-        public void SignInViewModelPositiveTest()
+        public void ProductViewModelPositiveTest()
         {
             var validModel = new ProductViewModel()
             {
                 ProductName = "someName",
-                PlatformId = "1",
-                GenreId = "2"
+                PlatformId = 1,
+                GenreId = 2
             };
-            var errorcount = ModelValidator.ValidateViewModel(validModel).Count();
+            var errorcount = modelValidator.ValidateViewModel(validModel).Count();
             Assert.Equal(0, errorcount);
         }
 
         [Fact]
-        public void SignInViewModelNegativeTest()
+        public void ProductViewModelNegativeTest()
         {
             var modelWithout2Fields = new ProductViewModel()
             {
-                ProductName = "SomeName2",
-                TotalRating = "10",
-                AgeRating = "12",
+                TotalRating = 10,
+                AgeRating = 12,
                 LogoLink = "SomeLink1",
                 BackgroundLink = "SomeLink2",
-                Price = "21.3",
-                Count = "19"
-
+                Price = 21.3,
+                Count = 19
             };
-            var errorcount = ModelValidator.ValidateViewModel(modelWithout2Fields).Count();
-            Assert.Equal(2, errorcount);
+            var errorcount = modelValidator.ValidateViewModel(modelWithout2Fields).Count();
+            Assert.Equal(1, errorcount);
         }
     }
 }

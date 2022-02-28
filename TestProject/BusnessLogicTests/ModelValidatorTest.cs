@@ -12,6 +12,8 @@ namespace TestProject.BusnessLogicTests
 {
     public class ModelValidatorTest
     {
+        ModelValidator modelValidator = new ModelValidator();
+
         [Fact]
         public void ValidatorPositiveTest()
         {
@@ -21,7 +23,7 @@ namespace TestProject.BusnessLogicTests
                 Password = "Qwerty123"
             };
             var errors = ValidateViewModel(model);
-            Assert.Equal(ModelValidator.ValidateViewModel(model).Count, errors.Count);
+            Assert.Equal(modelValidator.ValidateViewModel(model).Count, errors.Count);
 
             model = new SignUpViewModel
             {
@@ -30,7 +32,7 @@ namespace TestProject.BusnessLogicTests
                 PasswordConfirm = "Qwerty123",
             };
             errors = ValidateViewModel(model);
-            Assert.Equal(ModelValidator.ValidateViewModel(model).Count, errors.Count);
+            Assert.Equal(modelValidator.ValidateViewModel(model).Count, errors.Count);
 
             model = new ProfileViewModel
             {
@@ -38,7 +40,7 @@ namespace TestProject.BusnessLogicTests
                 UserName = "User111"
             };
             errors = ValidateViewModel(model);
-            Assert.Equal(ModelValidator.ValidateViewModel(model).Count, errors.Count);
+            Assert.Equal(modelValidator.ValidateViewModel(model).Count, errors.Count);
 
             model = new ChangePasswordViewModel
             {
@@ -47,7 +49,7 @@ namespace TestProject.BusnessLogicTests
                 NewPasswordConfirm = "Qwerty123",
             };
             errors = ValidateViewModel(model);
-            Assert.Equal(ModelValidator.ValidateViewModel(model).Count, errors.Count);
+            Assert.Equal(modelValidator.ValidateViewModel(model).Count, errors.Count);
         }
 
         [Fact]
@@ -58,7 +60,7 @@ namespace TestProject.BusnessLogicTests
                 Email = "some00email@gmail.com"
             };
             var errors = ValidateViewModel(model);
-            Assert.Equal(ModelValidator.ValidateViewModel(model).Count, errors.Count);
+            Assert.Equal(modelValidator.ValidateViewModel(model).Count, errors.Count);
 
             model = new SignUpViewModel
             {
@@ -66,7 +68,7 @@ namespace TestProject.BusnessLogicTests
                 Password = "Qwerty123"
             };
             errors = ValidateViewModel(model);
-            Assert.Equal(ModelValidator.ValidateViewModel(model).Count, errors.Count);
+            Assert.Equal(modelValidator.ValidateViewModel(model).Count, errors.Count);
 
             model = new ProfileViewModel
             {
@@ -74,7 +76,7 @@ namespace TestProject.BusnessLogicTests
                 PhoneNumber = "+375336512314"
             };
             errors = ValidateViewModel(model);
-            Assert.Equal(ModelValidator.ValidateViewModel(model).Count, errors.Count);
+            Assert.Equal(modelValidator.ValidateViewModel(model).Count, errors.Count);
 
             model = new ChangePasswordViewModel
             {
@@ -82,7 +84,7 @@ namespace TestProject.BusnessLogicTests
                 NewPasswordConfirm = "Qwerty123",
             };
             errors = ValidateViewModel(model);
-            Assert.Equal(ModelValidator.ValidateViewModel(model).Count, errors.Count);
+            Assert.Equal(modelValidator.ValidateViewModel(model).Count, errors.Count);
         }
 
         [Fact]
@@ -92,7 +94,7 @@ namespace TestProject.BusnessLogicTests
             {
                 Email = "some00email@gmail.com"
             };
-            Assert.Equal("Password: The Password field is required.\n", ModelValidator.StringifyErrors(ModelValidator.ValidateViewModel(model)));
+            Assert.Equal("Password: The Password field is required.\n", modelValidator.StringifyErrors(modelValidator.ValidateViewModel(model)));
 
             model = new SignUpViewModel
             {
@@ -100,7 +102,7 @@ namespace TestProject.BusnessLogicTests
                 Password = "Qwerty123"
             };
             var errors = ValidateViewModel(model);
-            Assert.Equal("PasswordConfirm: The Confirm password field is required.\n", ModelValidator.StringifyErrors(ModelValidator.ValidateViewModel(model)));
+            Assert.Equal("PasswordConfirm: The Confirm password field is required.\n", modelValidator.StringifyErrors(modelValidator.ValidateViewModel(model)));
 
             model = new ProfileViewModel
             {
@@ -108,8 +110,8 @@ namespace TestProject.BusnessLogicTests
                 PhoneNumber = "+375336512314"
             };
             errors = ValidateViewModel(model);
-            Assert.Equal("UserName: The User name field is required.\nEmail: The Email field is required.\n", 
-                ModelValidator.StringifyErrors(ModelValidator.ValidateViewModel(model)));
+            Assert.Equal("UserName: The User name field is required.\nEmail: The Email field is required.\n",
+                modelValidator.StringifyErrors(modelValidator.ValidateViewModel(model)));
 
             model = new ChangePasswordViewModel
             {
@@ -117,7 +119,7 @@ namespace TestProject.BusnessLogicTests
                 NewPasswordConfirm = "Qwerty123",
             };
             errors = ValidateViewModel(model);
-            Assert.Equal("OldPassword: The Old password field is required.\n", ModelValidator.StringifyErrors(ModelValidator.ValidateViewModel(model)));
+            Assert.Equal("OldPassword: The Old password field is required.\n", modelValidator.StringifyErrors(modelValidator.ValidateViewModel(model)));
         }
 
         private IList<ValidationResult> ValidateViewModel(object model)

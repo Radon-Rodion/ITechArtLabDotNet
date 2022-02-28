@@ -13,6 +13,8 @@ namespace TestProject.BuisnessLogicTests
     {
         const string MOQ_USER_NAME = "UserName";
         const string MOQ_USER_ROLE = "UserRole";
+        JWTokenGenerator jWTokenGenerator = new JWTokenGenerator();
+        JWTokenValidator jWTokenValidator = new JWTokenValidator();
 
         [Fact]
         public void TestTokenConfig()
@@ -26,32 +28,32 @@ namespace TestProject.BuisnessLogicTests
         [Fact]
         public void TestTokenGeneratorNegtive()
         {
-            Assert.Throws<ArgumentNullException>(() => JWTokenGenerator.GenerateToken(MOQ_USER_NAME, null, MoqConfigs.jwtConfig));
-            Assert.Throws<ArgumentNullException>(() => JWTokenGenerator.GenerateToken(null, MOQ_USER_ROLE, MoqConfigs.jwtConfig));
+            Assert.Throws<ArgumentNullException>(() => jWTokenGenerator.GenerateToken(MOQ_USER_NAME, null, MoqConfigs.jwtConfig));
+            Assert.Throws<ArgumentNullException>(() => jWTokenGenerator.GenerateToken(null, MOQ_USER_ROLE, MoqConfigs.jwtConfig));
         }
 
         [Fact]
         public void TestTokenGeneratorPositive()
         {
-            var token1 = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE, MoqConfigs.jwtConfig);
-            var token2 = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE, MoqConfigs.jwtConfig);
+            var token1 = jWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE, MoqConfigs.jwtConfig);
+            var token2 = jWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE, MoqConfigs.jwtConfig);
             Assert.True(token1.Substring(0, 50) == token2.Substring(0, 50), "Tokens with same data beginings must be equal!");
         }
 
         [Fact]
         public void TestTokenValidatorNegative()
         {
-            var invalidToken = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, "", MoqConfigs.jwtConfig);
+            var invalidToken = jWTokenGenerator.GenerateToken(MOQ_USER_NAME, "", MoqConfigs.jwtConfig);
 
-            Assert.False(JWTokenValidator.IsTokenRoleValid(invalidToken, MOQ_USER_ROLE, MoqConfigs.jwtConfig), "Invalid token validation fail");
+            Assert.False(jWTokenValidator.IsTokenRoleValid(invalidToken, MOQ_USER_ROLE, MoqConfigs.jwtConfig), "Invalid token validation fail");
         }
 
         [Fact]
         public void TestTokenValidatorPositive()
         {
-            var validToken = JWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE, MoqConfigs.jwtConfig);
+            var validToken = jWTokenGenerator.GenerateToken(MOQ_USER_NAME, MOQ_USER_ROLE, MoqConfigs.jwtConfig);
 
-            Assert.True(JWTokenValidator.IsTokenRoleValid(validToken, MOQ_USER_ROLE, MoqConfigs.jwtConfig), "Valid token validation fail");
+            Assert.True(jWTokenValidator.IsTokenRoleValid(validToken, MOQ_USER_ROLE, MoqConfigs.jwtConfig), "Valid token validation fail");
         }
     }
 }

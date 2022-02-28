@@ -20,10 +20,17 @@ namespace iTechArtLab.Controllers
     public class HomeController : Controller
     {
         private readonly JWTokenConfig _jWTokenConfig;
+        private readonly AccessControlManager _accessControlManager;
+        private readonly SessionManager _sessionManager;
+        private readonly JWTokenValidator _jWTokenValidator;
 
-        public HomeController(IOptions<JWTokenConfig> jWTokenOptions)
+        public HomeController(IOptions<JWTokenConfig> jWTokenOptions, 
+            SessionManager sessionManager, JWTokenValidator jWTokenValidator, AccessControlManager accessControlManager)
         {
             _jWTokenConfig = jWTokenOptions.Value;
+            _sessionManager = sessionManager;
+            _jWTokenValidator = jWTokenValidator;
+            _accessControlManager = accessControlManager;
         }
 
         /// <summary>
@@ -37,7 +44,8 @@ namespace iTechArtLab.Controllers
         public string GetInfo()
         {
             string errorResponse;
-            if (!AccessControlManager.IsTokenValid(HttpContext, out errorResponse, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorResponse, _sessionManager, 
+                _jWTokenValidator, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
 
             Log.Logger.Information($"GetInfo requested at {DateTime.UtcNow.ToLongTimeString()}");
             HttpContext.Response.StatusCode = 200;

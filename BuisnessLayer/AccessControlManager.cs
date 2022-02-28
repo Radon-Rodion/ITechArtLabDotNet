@@ -9,20 +9,23 @@ namespace BuisnessLayer
 {
     public class AccessControlManager
     {
-        public static bool IsTokenValid(HttpContext context, out string response, string role = null, JWTokenConfig tokenConfig = null)
+        public bool IsTokenValid(HttpContext context, out string response, SessionManager sessionManager,
+            JWTokenValidator validator = null, string role = null, JWTokenConfig tokenConfig = null)
         {
             response = null;
-            if (!SessionManager.HasToken(context.Session)) //check authenticated
+            if (!sessionManager.HasToken(context.Session)) //check authenticated
             {
                 context.Response.StatusCode = 401;
                 response = "Sign in first!";
+                return false;
             }
-            if (role!= null && !JWTokenValidator.IsTokenRoleValid(SessionManager.GetToken(context.Session), role, tokenConfig)) //check role
+            if (role!= null && !validator.IsTokenRoleValid(sessionManager.GetToken(context.Session), role, tokenConfig)) //check role
             {
                 context.Response.StatusCode = 403;
                 response = "You are not admin!";
+                return false;
             }
-            return response == null;
+            return true;
         }
     }
 }
