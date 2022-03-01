@@ -16,17 +16,47 @@ namespace BuisnessLayer
     {
         public IEnumerable<Platform> GetTop3Platforms(IQueryable<Platform> platforms)//ApplicationDbContext context
         {
-            return platforms.OrderByDescending(p => p.Products.Where(prod => prod.DateCreated != null).Count()).Take(3);
+            return platforms.OrderByDescending(p => p.Products.Where(prod => !prod.IsDeleted).Count()).Take(3);
         }
 
         public IEnumerable<Platform> GetTop3Platforms(IEnumerable<Platform> platforms)
         {
-            return platforms.OrderByDescending(p => p.Products.Where(prod => prod.DateCreated != null).Count()).Take(3);
+            return platforms.OrderByDescending(p => p.Products.Where(prod => !prod.IsDeleted).Count()).Take(3);
         }
 
         public IEnumerable<Product> SearchByName(IEnumerable<Product> products, string namePart, int limit, int offset)
         {
-            return products.Where(p => p.DateCreated != null && p.Name.ToLower().Contains(namePart.ToLower())).Skip(offset).Take(limit);
+            return products.Where(p => !p.IsDeleted && p.Name.ToLower().Contains(namePart.ToLower())).Skip(offset).Take(limit);
+        }
+
+        public List<List<Product>> FilterSearchAndPaginate(string nameFilter, int genreFilter, int ageFilter, 
+            string sortField, bool ascSorting, ApplicationDbContext context, int elementsOnPage)
+        {
+            int sortParam = ascSorting ? 1 : -1;
+
+            var productsFitting = context.Products.Where(p => !p.IsDeleted && p.Name.ToLower().Contains(nameFilter.ToLower().Trim())
+                && (genreFilter == 0 || p.GenreId == genreFilter) && (ageFilter == 0 || p.AgeRating == ageFilter))
+                .OrderBy(p => sortField == SortField.Name(SortFields.Price) ? p.Price * sortParam : p.TotalRating * sortParam);
+
+            var paginatedProducts = new List<List<Product>>();
+            var singlePage = new List<Product>();
+            var i = 0;
+            foreach(var product in productsFitting)
+            {
+                singlePage.Add(product);
+
+                if(i% elementsOnPage == elementsOnPage-1) //starting new page
+                {
+                    paginatedProducts.Add(singlePage);
+                    singlePage = new List<Product>();
+                }
+                i++;
+            }
+            if(i % elementsOnPage != 0) //last page if was not full
+            {
+                paginatedProducts.Add(singlePage);
+            }
+            return paginatedProducts;
         }
 
         public async Task<Product> AddNewProductAsync(ApplicationDbContext context, ProductViewModel model, CloudinaryManager cloudinaryManager)
@@ -42,7 +72,8 @@ namespace BuisnessLayer
                 LogoLink = cloudinaryManager.UploadImage(model.LogoLink),
                 BackgroundLink = cloudinaryManager.UploadImage(model.BackgroundLink),
                 Price = System.Convert.ToInt32(model.Price),
-                Count = System.Convert.ToInt32(model.Count)
+                Count = System.Convert.ToInt32(model.Count),
+                IsDeleted = false
             };
 
             context.Add(product);
@@ -54,7 +85,6 @@ namespace BuisnessLayer
         {
             product.Name = model.ProductName;
             product.PlatformId = model.PlatformId;
-            product.TotalRating = model.TotalRating;
             product.GenreId = model.GenreId;
             product.AgeRating = model.AgeRating;
             product.LogoLink = cloudinaryManager.UploadImage(model.LogoLink);
@@ -71,6 +101,7 @@ namespace BuisnessLayer
             product.DateCreated = null;
             product.PlatformId = null;
             product.GenreId = null;
+            product.IsDeleted = true;
 
             context.Update(product);
             await context.SaveChangesAsync();
@@ -80,6 +111,61 @@ namespace BuisnessLayer
         {
             context.Products.Remove(product);
             await context.SaveChangesAsync();
+        }
+
+        private async Task RecalculateTotalRatingAsync(int productId, ApplicationDbContext context)
+        {
+            long ratingsSum = 0;
+            var ratingsOfProduct = context.Ratings.Where(r => r.ProductId == productId && !r.IsDeleted);
+            foreach (var rating in ratingsOfProduct)
+                ratingsSum += rating.Rating;
+
+            var product = await context.Products.FindAsync(productId);
+            if (ratingsOfProduct.Count() != 0)
+                product.TotalRating = Convert.ToInt32(ratingsSum / ratingsOfProduct.Count());
+            else product.TotalRating = 0;
+
+            context.Update(product);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<ProductRating> FindRatingAsync(int productId, int userId, ApplicationDbContext context)
+        {
+            var rating = context.Ratings.Where(r => r.ProductId == productId && r.UserId == userId).FirstOrDefault();
+            return rating;
+        }
+
+        public async Task<ProductRating> RateProductAsync(int productId, int userId, int ratingValue, ApplicationDbContext context)
+        {
+            var rating = await FindRatingAsync(productId, userId, context);
+
+            if(rating == null) //doesn't rating of this user about this product already exists(ever existed)?
+            {
+                rating = new ProductRating() { ProductId = productId, UserId = userId, Rating = ratingValue, IsDeleted = false };
+                context.Add(rating);
+            } else
+            {
+                rating.Rating = ratingValue;
+                rating.IsDeleted = false;
+                context.Update(rating);
+            }
+            await context.SaveChangesAsync();
+            await RecalculateTotalRatingAsync(productId, context);
+            return rating;
+        }
+
+        public async Task DeleteRatingHardAsync(ProductRating rating, ApplicationDbContext context)
+        {
+            context.Ratings.Remove(rating);
+            await context.SaveChangesAsync();
+            await RecalculateTotalRatingAsync(rating.ProductId, context);
+        }
+
+        public async Task DeleteRatingSoftAsync(ProductRating rating, ApplicationDbContext context)
+        {
+            rating.IsDeleted = true;
+            await context.SaveChangesAsync();
+            await RecalculateTotalRatingAsync(rating.ProductId, context);
         }
     }
 }
