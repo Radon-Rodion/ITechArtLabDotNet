@@ -83,11 +83,15 @@ namespace iTechArtLab.Controllers
 
         [HttpGet("list")]
         [ServiceFilter(typeof(SearchParamsFilterAsync))]
-        public IActionResult ListGames(string nameFilter, int genreFilter, int ageFilter, string sortField, string? ascSorting, int elementsOnPage)
+        public async Task<IActionResult> ListGames
+            (string nameFilter, int? genreFilter, int? ageFilter, string sortField, string? ascSorting, int elementsOnPage, int pageNumber)
         {
             if (nameFilter == null) nameFilter = "";
             bool ascSort = ascSorting != null;
-            var paginatedProducts = _productsManager.FilterSearchAndPaginate(nameFilter, genreFilter, ageFilter, sortField, ascSort, _context, elementsOnPage);
+
+            var paginatedProducts = await _productsManager.FilterSearchAndPaginateAsync
+                (nameFilter, genreFilter ?? -1, ageFilter ?? -1, sortField, ascSort, _context, elementsOnPage, pageNumber);
+
             return View("List", paginatedProducts);
         }
 
@@ -272,7 +276,6 @@ namespace iTechArtLab.Controllers
             string errorMessage;
             if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
 
-            Log.Logger.Warning($"gameId: {model.GameId}; rating: {model.Rating}");
             if (!ModelState.IsValid)
             {
                 return View("Rating", model);

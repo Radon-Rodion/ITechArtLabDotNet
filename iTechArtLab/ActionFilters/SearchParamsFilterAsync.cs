@@ -13,14 +13,14 @@ namespace iTechArtLab.ActionFilters
         {
             var parameters = context.ActionArguments.ToList();
             var param = parameters.SingleOrDefault(p => p.Key == "genreFilter").Value;
-            if (param==null || (int)(param) < 0)
+            if (param!=null && (int)(param) < 0)
             {
                 context.Result = new BadRequestObjectResult("Genre filter is invalid");
                 return;
             }
 
             param = parameters.SingleOrDefault(p => p.Key == "ageFilter").Value;
-            if (param == null || (int)(param) < 0)
+            if (param != null && (int)(param) < 0)
             {
                 context.Result = new BadRequestObjectResult("Age filter is invalid");
                 return;
@@ -36,7 +36,13 @@ namespace iTechArtLab.ActionFilters
             param = parameters.SingleOrDefault(p => p.Key == "elementsOnPage").Value;
             if (param == null || (int)(param) < 0)
             {
-                context.Result = new BadRequestObjectResult("Elements On Page number is invalid");
+                context.Result = new BadRequestObjectResult("Elements on page number is invalid");
+                return;
+            }
+            param = parameters.SingleOrDefault(p => p.Key == "pageNumber").Value;
+            if (param == null || (int)(param) < 0)
+            {
+                context.Result = new BadRequestObjectResult("Page number is invalid");
                 return;
             }
             await next();

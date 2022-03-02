@@ -29,34 +29,16 @@ namespace BuisnessLayer
             return products.Where(p => !p.IsDeleted && p.Name.ToLower().Contains(namePart.ToLower())).Skip(offset).Take(limit);
         }
 
-        public List<List<Product>> FilterSearchAndPaginate(string nameFilter, int genreFilter, int ageFilter, 
-            string sortField, bool ascSorting, ApplicationDbContext context, int elementsOnPage)
+        public async Task<List<Product>> FilterSearchAndPaginateAsync(string nameFilter, int genreFilter, int ageFilter, 
+            string sortField, bool ascSorting, ApplicationDbContext context, int elementsOnPage, int pageNumber)
         {
             int sortParam = ascSorting ? 1 : -1;
 
             var productsFitting = context.Products.Where(p => !p.IsDeleted && p.Name.ToLower().Contains(nameFilter.ToLower().Trim())
-                && (genreFilter == 0 || p.GenreId == genreFilter) && (ageFilter == 0 || p.AgeRating == ageFilter))
-                .OrderBy(p => sortField == SortField.Name(SortFields.Price) ? p.Price * sortParam : p.TotalRating * sortParam);
-
-            var paginatedProducts = new List<List<Product>>();
-            var singlePage = new List<Product>();
-            var i = 0;
-            foreach(var product in productsFitting)
-            {
-                singlePage.Add(product);
-
-                if(i% elementsOnPage == elementsOnPage-1) //starting new page
-                {
-                    paginatedProducts.Add(singlePage);
-                    singlePage = new List<Product>();
-                }
-                i++;
-            }
-            if(i % elementsOnPage != 0) //last page if was not full
-            {
-                paginatedProducts.Add(singlePage);
-            }
-            return paginatedProducts;
+                && (genreFilter == -1 || p.GenreId == genreFilter) && (ageFilter == -1 || p.AgeRating == ageFilter))
+                .OrderBy(p => sortField == SortField.Name(SortFields.Price) ? p.Price * sortParam : p.TotalRating * sortParam)
+                .Skip((pageNumber-1)*elementsOnPage).Take(elementsOnPage);
+            return await productsFitting.ToListAsync();
         }
 
         public async Task<Product> AddNewProductAsync(ApplicationDbContext context, ProductViewModel model, CloudinaryManager cloudinaryManager)

@@ -7,7 +7,7 @@
     <div class="col-md-4">
         <form method="post" asp-controller="Products" asp-action="RateGame">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group" style="display:none;">
                 <label asp-for="GameId" class="control-label"></label>
                 <input asp-for="GameId" class="form-control" id="gameId" />
                 <span asp-validation-for="GameId" class="text-danger"></span>
@@ -31,7 +31,7 @@
     <a href="/api/games/search">Back to Search</a>
 </div>
 <div>
-    <a href="/api/games/list?nameFilter= &genreFilter=0&ageFilter=0&sortField=Rating&ascSorting=on&elementsOnPage=5">Back to List</a>
+    <a href="/api/games/list?sortField=Rating&ascSorting=on&elementsOnPage=5&pageNumber=1">Back to List</a>
 </div>
 
 <script>
