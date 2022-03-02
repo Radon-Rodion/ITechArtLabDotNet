@@ -87,7 +87,6 @@ namespace DataAccessLayer.Models
         /// </summary>
         /// <remarks>Not required, numeric</remarks>
         /// <example>20.5</example>
-        [RegularExpression(@"^[0-9]*$", ErrorMessage = "Must be numeric")]
         [Display(Name = "Price")]
         public double Price { get; set; }
 

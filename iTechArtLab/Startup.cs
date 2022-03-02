@@ -23,6 +23,7 @@ using BuisnessLayer.Cloudinary;
 using DataAccessLayer.Entities;
 using System.IO;
 using BuisnessLayer;
+using iTechArtLab.ActionFilters;
 
 namespace iTechArtLab
 {
@@ -87,6 +88,8 @@ namespace iTechArtLab
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(System.Convert.ToInt32(Configuration.GetSection("JWTokenConfig").GetSection("Lifetime").Value));
             });
+
+            services.AddScoped<SearchParamsFilterAsync>();
 
             services.AddControllersWithViews();
 

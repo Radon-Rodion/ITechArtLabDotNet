@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using DataAccessLayer.Entities;
 
 namespace DataAccessLayer.Migrations
 {
@@ -279,29 +278,6 @@ namespace DataAccessLayer.Migrations
                 name: "IX_Products_TotalRating",
                 table: "Products",
                 column: "TotalRating");
-            foreach(Platforms platform in Enum.GetValues(typeof(Platforms)))
-            {
-                migrationBuilder.InsertData("Platforms", "PlatformName", Platform.Name(platform));
-            }
-            /*migrationBuilder.InsertData("Platforms", "PlatformName", "Playstation");
-            migrationBuilder.InsertData("Platforms", "PlatformName", "Windows");
-            migrationBuilder.InsertData("Platforms", "PlatformName", "XBox");
-            migrationBuilder.InsertData("Platforms", "PlatformName", "IMac");
-            migrationBuilder.InsertData("Platforms", "PlatformName", "Linux");
-            migrationBuilder.InsertData("Platforms", "PlatformName", "Nintendo");*/
-            migrationBuilder.InsertData("Genres", "GenreName", "Shooter");
-            migrationBuilder.InsertData("Genres", "GenreName", "Strategy");
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Game1", 6, 9, DateTime.Now});
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Game2", 6, 9, DateTime.Now });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Game3", 6, 9, DateTime.Now });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Game4", 6, 9, DateTime.Now });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Game5", 3, 9, DateTime.Now });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Some1", 3, 9, DateTime.Now });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Some2", 3, 9, DateTime.Now });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Some3", 5, 9, DateTime.Now });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Emag1", 5, 9, DateTime.Now });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "Emag2", 5, 9, DateTime.Now });
-            migrationBuilder.InsertData("Products", new string[] { "Name", "PlatformId", "TotalRating", "DateCreated" }, new object[] { "GaSo1", 5, 9, DateTime.Now });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -123,6 +123,20 @@
             <remarks>not required</remarks>
             <example>+375251892399</example>
         </member>
+        <member name="P:DataAccessLayer.Models.RatingViewModel.GameId">
+            <summary>
+            Id of the rated product(game)
+            </summary>
+            <remarks>Not required, because must not be changed</remarks>
+            <example>5</example>
+        </member>
+        <member name="P:DataAccessLayer.Models.RatingViewModel.Rating">
+            <summary>
+            Total rating (mark) of the product(game)
+            </summary>
+            <remarks>Required, numeric</remarks>
+            <example>10</example>
+        </member>
         <member name="P:DataAccessLayer.Models.SignInViewModel.Email">
             <summary>
             Email of signing in account

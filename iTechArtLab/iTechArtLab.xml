@@ -131,6 +131,7 @@
             <response code="400">Errors during info validation</response>
             <response code="401">Sign in required</response>
             <response code="403">Admin role required</response>
+            <response code="404">No such game found</response>
         </member>
         <member name="M:iTechArtLab.Controllers.ProductsController.DeleteGameInfo(System.Nullable{System.Int32})">
             <summary>

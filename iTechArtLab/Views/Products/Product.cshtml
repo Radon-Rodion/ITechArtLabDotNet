@@ -11,37 +11,37 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" disabled id="id"/>
+                <input asp-for="Id" class="form-control" disabled id="id" />
                 <span asp-validation-for="Id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ProductName" class="control-label"></label>
-                <input asp-for="ProductName" class="form-control" id="productName"/>
+                <input asp-for="ProductName" class="form-control" id="productName" />
                 <span asp-validation-for="ProductName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PlatformId" class="control-label"></label>
-                <input asp-for="PlatformId" class="form-control" type="number" id="platformId"/>
+                <input asp-for="PlatformId" class="form-control" type="number" id="platformId" />
             </div>
             <div class="form-group">
                 <label asp-for="TotalRating" class="control-label"></label>
-                <input asp-for="TotalRating" class="form-control" id="totalRating"/>
+                <input asp-for="TotalRating" class="form-control" disabled id="totalRating" />
                 <span asp-validation-for="TotalRating" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="GenreId" class="control-label"></label>
-                <input asp-for="GenreId" class="form-control" type="number" id="genreId"/>
+                <input asp-for="GenreId" class="form-control" type="number" id="genreId" />
             </div>
             <div class="form-group">
                 <label asp-for="AgeRating" class="control-label"></label>
-                <input asp-for="AgeRating" class="form-control" id="ageRating"/>
+                <input asp-for="AgeRating" class="form-control" id="ageRating" />
                 <span asp-validation-for="AgeRating" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LogoLink" class="control-label"></label>
-                <input asp-for="LogoLink" class="form-control" id="logoLink"/>
+                <input asp-for="LogoLink" class="form-control" id="logoLink" />
                 <span asp-validation-for="LogoLink" class="text-danger"></span>
-                <img src="@Model.LogoLink" alt="No Image" id="logoImg"/>
+                <img src="@Model.LogoLink" alt="No Image" id="logoImg" />
             </div>
             <div class="form-group">
                 <label asp-for="BackgroundLink" class="control-label"></label>
@@ -51,23 +51,26 @@
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" id="price"/>
+                <input asp-for="Price" class="form-control" id="price" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Count" class="control-label"></label>
-                <input asp-for="Count" class="form-control" id="count"/>
+                <input asp-for="Count" class="form-control" id="count" />
                 <span asp-validation-for="Count" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Update" class="btn btn-primary" id="submitBtn"/>
+                <input type="submit" value="Update" class="btn btn-primary" id="submitBtn" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a href="/api/games/search">Back to List</a>
+    <a href="/api/games/search">Back to Search</a>
+</div>
+<div>
+    <a href="/api/games/list?sortField=Rating&ascSorting=on&elementsOnPage=5&pageNumber=1">Back to List</a>
 </div>
 
 @section Scripts {

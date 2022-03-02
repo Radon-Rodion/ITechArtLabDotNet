@@ -10,5 +10,6 @@ namespace DataAccessLayer.Entities
     public class User : IdentityUser<int>
     {
         public string Delivery { get; set; }
+        public ICollection<ProductRating> Ratings { get; set; }
     }
 }

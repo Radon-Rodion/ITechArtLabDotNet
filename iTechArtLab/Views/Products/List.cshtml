@@ -1,0 +1,149 @@
+﻿@model IEnumerable<DataAccessLayer.Entities.Product>
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>List</h1>
+<form method="get">
+    <div class="form-group">
+        <label for="nameFilter" class="control-label">Name filter:</label>
+        <input name="nameFilter" class="form-control" id="nameFilter" />
+        <span asp-validation-for="nameFilter" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="genreFilter" class="control-label">Genre filter:</label>
+        <input name="genreFilter" class="form-control" type="number" id="genreFilter" />
+    </div>
+    <div class="form-group">
+        <label for="ageFilter" class="control-label">Age filter:</label>
+        <input name="ageFilter" class="form-control" type="number" id="ageFilter" />
+    </div>
+    <div class="form-group">
+        <label for="sortField" class="control-label">Sort field:</label>
+        <select name="sortField" class="form-control" type="number" id="sortField">
+            <option value="Price">Price</option>
+            <option value="Rating">Rating</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="ascSorting" class="control-label">Sort ascending:</label>
+        <input name="ascSorting" class="form-control" type="checkbox" id="ascSorting" />
+    </div>
+    <div class="form-group">
+        <label for="elementsOnPage" class="control-label">Elements on page:</label>
+        <input name="elementsOnPage" class="form-control" type="number" id="elementsOnPage" />
+    </div>
+    <div class="form-group">
+        <label for="pageNumber" class="control-label">Page number:</label>
+        <input name="pageNumber" class="form-control" type="number" id="pageNumber" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Filter and sort" class="btn btn-primary" />
+    </div>
+</form>
+
+<p>
+    <a href="/api/games">Create New</a>
+</p>
+<p>
+    <a href="/api/games/search">To search</a>
+</p>
+
+<h2>Paginated list</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlatformId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GenreId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AgeRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LogoLink)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BackgroundLink)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Count)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlatformId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GenreId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalRating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AgeRating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LogoLink)
+                    <img src="@item.LogoLink" alt="No Image" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BackgroundLink)
+                    <img src="@item.BackgroundLink" alt="No Image" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Count)
+                </td>
+                <td>
+                    <a href="id/@item.Id">Details</a>
+                </td>
+                <td>
+                    <a href="rating?gameId=@item.Id">Rate</a>
+                </td>
+                <td>
+                    <button id="@item.Id">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    async function sendDeleteAsync(id) {
+        const response = await fetch(`/api/games/id/${id}`, {
+            method: 'delete',
+        });
+    }
+</script>
+
+@foreach (var item in Model)
+{
+    <script>
+        document.getElementById("@item.Id").addEventListener("click", e => {
+            e.preventDefault();
+            sendDeleteAsync(@item.Id);
+        });
+    </script>
+}

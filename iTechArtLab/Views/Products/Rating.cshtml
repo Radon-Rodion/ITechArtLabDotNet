@@ -1,0 +1,57 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using DataAccessLayer.Models
+@model RatingViewModel
+
+<h4>Rating</h4>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-controller="Products" asp-action="RateGame">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" style="display:none;">
+                <label asp-for="GameId" class="control-label"></label>
+                <input asp-for="GameId" class="form-control" id="gameId" />
+                <span asp-validation-for="GameId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <input asp-for="Rating" class="form-control" type="number" />
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Rate game" class="btn btn-primary" />
+            </div>
+            <div class="form-group">
+                <input type="button" value="Delete rating" class="btn btn-primary" id="deleteBtn" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a href="/api/games/search">Back to Search</a>
+</div>
+<div>
+    <a href="/api/games/list?sortField=Rating&ascSorting=on&elementsOnPage=5&pageNumber=1">Back to List</a>
+</div>
+
+<script>
+    //disabled
+    async function sendDeleteAsync() {
+        const formData = new FormData();
+        formData.append('gameId', document.getElementById("gameId").value);
+
+        const response = await fetch(`/api/games/rating`, {
+            method: 'delete',
+            headers: { "Accept": "application/json" },
+            body: formData
+        });
+
+        if (response.status === 204) {
+            window.location.href = "/api/games/search";
+        }
+    }
+    document.getElementById("deleteBtn").addEventListener("click", e => {
+        e.preventDefault();
+        sendDeleteAsync();
+    });
+</script>

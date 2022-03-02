@@ -13,6 +13,8 @@ namespace DataAccessLayer.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Platform> Platforms { get; set; }
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<ProductRating> Ratings { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

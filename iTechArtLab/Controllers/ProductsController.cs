@@ -12,6 +12,7 @@ using BuisnessLayer;
 using BuisnessLayer.Cloudinary;
 using BuisnessLayer.JWToken;
 using Microsoft.Extensions.Options;
+using iTechArtLab.ActionFilters;
 using Serilog;
 
 namespace iTechArtLab.Controllers
@@ -79,6 +80,21 @@ namespace iTechArtLab.Controllers
             }
         }
 
+
+        [HttpGet("list")]
+        [ServiceFilter(typeof(SearchParamsFilterAsync))]
+        public async Task<IActionResult> ListGames
+            (string nameFilter, int? genreFilter, int? ageFilter, string sortField, string? ascSorting, int elementsOnPage, int pageNumber)
+        {
+            if (nameFilter == null) nameFilter = "";
+            bool ascSort = ascSorting != null;
+
+            var paginatedProducts = await _productsManager.FilterSearchAndPaginateAsync
+                (nameFilter, genreFilter ?? -1, ageFilter ?? -1, sortField, ascSort, _context, elementsOnPage, pageNumber);
+
+            return View("List", paginatedProducts);
+        }
+
         /// <summary>
         /// Get request for product(game) information by its id
         /// </summary>
@@ -95,7 +111,7 @@ namespace iTechArtLab.Controllers
             }
 
             var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (product == null || product.DateCreated == null)
             {
                 return NotFound();
@@ -162,6 +178,7 @@ namespace iTechArtLab.Controllers
         /// <response code="400">Errors during info validation</response>
         /// <response code="401">Sign in required</response>
         /// <response code="403">Admin role required</response>
+        /// <response code="404">No such game found</response>
         [HttpPut]
         public async Task<object> UpdateGameInfo(int id, string productName, int platformId,
             int totalRating, int genreId, int ageRating, string logoLink, string backgroundLink, int price, int count)
@@ -171,7 +188,7 @@ namespace iTechArtLab.Controllers
                 _jWTokenValidator, Role.Name(Roles.Admin), _jWTokenConfig)) return errorResponse;
 
             var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            if (product == null || product.IsDeleted)
             {
                 return NotFound();
             }
@@ -180,7 +197,6 @@ namespace iTechArtLab.Controllers
             {
                 ProductName = productName,
                 PlatformId = platformId,
-                TotalRating = totalRating,
                 GenreId = genreId,
                 AgeRating = ageRating,
                 LogoLink = logoLink,
@@ -221,13 +237,70 @@ namespace iTechArtLab.Controllers
             {
                 return NotFound("Didn't got id");
             }
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
-            if (product == null)
-            {
-                return NotFound($"Product with id {id} not found");
-            }
-            await _productsManager.DeleteSoftAsync(product, _context); //Soft deleting
             HttpContext.Response.StatusCode = 204;
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+            if (product != null)
+            {
+                await _productsManager.DeleteSoftAsync(product, _context); //Soft deleting
+            }
+            
+            return "{}";
+        }
+
+        [HttpGet("rating")]
+        public async Task<object> GetRatingForm(int gameId)
+        {
+            string errorMessage;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
+
+            var product = await _context.Products
+                .FirstOrDefaultAsync(p => p.Id == gameId);
+            if (product == null || product.IsDeleted)
+            {
+                return NotFound();
+            }
+
+            int userId = _sessionManager.GetUserId(HttpContext.Session);
+            var rating = await _productsManager.FindRatingAsync(gameId, userId, _context);
+            var model = new RatingViewModel(gameId);
+
+            if (rating != null && !rating.IsDeleted)
+                model.Rating = rating.Rating;
+
+            return View("Rating", model);
+        }
+
+        [HttpPost("rating")]
+        public async Task<object> RateGame(RatingViewModel model)
+        {
+            string errorMessage;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
+
+            if (!ModelState.IsValid)
+            {
+                return View("Rating", model);
+            }
+
+            int userId = _sessionManager.GetUserId(HttpContext.Session);
+            var newRating = await _productsManager.RateProductAsync(model.GameId, userId, model.Rating, _context);
+
+            var resultModel = new RatingViewModel(newRating.ProductId) { Rating = newRating.Rating };
+
+            return View("Rating", resultModel);
+        }
+
+        [HttpDelete("rating")]
+        public async Task<object> DeleteRating(int gameId)
+        {
+            string errorMessage;
+            if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) 
+                return errorMessage;
+
+            HttpContext.Response.StatusCode = 204;
+            var rating = await _context.Ratings.FirstOrDefaultAsync(r => r.ProductId == gameId);
+
+            if (rating != null && !rating.IsDeleted)
+                await _productsManager.DeleteRatingSoftAsync(rating, _context);
             return "{}";
         }
     }

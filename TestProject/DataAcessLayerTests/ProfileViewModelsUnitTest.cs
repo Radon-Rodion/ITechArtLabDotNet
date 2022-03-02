@@ -28,7 +28,7 @@ namespace TestProject.DataAcessLayerTests
         [Fact]
         public void ProductViewModelNegativeTest()
         {
-            var modelWithout2Fields = new ProductViewModel()
+            var modelWithoutField = new ProductViewModel()
             {
                 TotalRating = 10,
                 AgeRating = 12,
@@ -37,8 +37,19 @@ namespace TestProject.DataAcessLayerTests
                 Price = 21.3,
                 Count = 19
             };
-            var errorcount = modelValidator.ValidateViewModel(modelWithout2Fields).Count();
+            var errorcount = modelValidator.ValidateViewModel(modelWithoutField).Count();
             Assert.Equal(1, errorcount);
+        }
+
+        [Fact]
+        public void RatingViewModelTest()
+        {
+            var validModel = new RatingViewModel()
+            {
+                Rating = 10
+            };
+            var errorcount = modelValidator.ValidateViewModel(validModel).Count();
+            Assert.Equal(0, errorcount);
         }
     }
 }

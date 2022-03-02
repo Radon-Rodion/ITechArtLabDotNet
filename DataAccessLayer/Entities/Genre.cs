@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Entities
 {
-    public class Genre
+    public class Genre//: IEntity
     {
         public int GenreId { get; set; }
         public string GenreName { get; set; }

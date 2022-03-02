@@ -26,6 +26,9 @@
 <p>
     <a href="/api/games">Create New</a>
 </p>
+<p>
+    <a href="/api/games/list?sortField=Rating&ascSorting=on&elementsOnPage=5&pageNumber=1">To list</a>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -59,40 +62,43 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PlatformId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalRating)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AgeRating)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LogoLink)
-                    <img src="@item.LogoLink" alt="No Image"/>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BackgroundLink)
-                    <img src="@item.BackgroundLink" alt="No Image" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Count)
-                </td>
-                <td>
-                    <a href="id/@item.Id">Details</a>
-                </td>
-                <td>
-                    <button id="@item.Id">Delete</button>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlatformId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AgeRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LogoLink)
+                <img src="@item.LogoLink" alt="No Image" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BackgroundLink)
+                <img src="@item.BackgroundLink" alt="No Image" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Count)
+            </td>
+            <td>
+                <a href="id/@item.Id">Details</a>
+            </td>
+            <td>
+                <a href="rating?gameId=@item.Id">Rate</a>
+            </td>
+            <td>
+                <button id="@item.Id">Delete</button>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
