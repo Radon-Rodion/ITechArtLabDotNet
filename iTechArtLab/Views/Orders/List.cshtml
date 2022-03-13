@@ -1,0 +1,114 @@
+﻿@model IEnumerable<DataAccessLayer.Models.OrderViewModel>
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>Orders</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GameName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AddingDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var i = 0;
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td id="element @i">
+                        @item.OrderId
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GameName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AddingDate)
+                    </td>
+                    <td>
+                        <input type="number" id="edit @item.OrderId" value="@item.Amount" />
+                    </td>
+                    <td>
+                        <input type="checkbox" id="@item.OrderId"/>
+                    </td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>
+<button id="delete">Delete Selected</button>
+<button id="update">Update Amounts</button>
+<button id="buy">Buy all</button>
+
+<script>
+    async function sendDeleteAsync() {
+        const ids = new Array();
+        for (let i = 0; i <@Model.Count(); i++) {
+            const id = +document.getElementById(`element ${i}`).innerText;
+            if (document.getElementById(`${id}`).checked) {
+                ids.push(id);
+            }
+        }
+
+        const response = await fetch(`/api/orders`, {
+            method: 'delete',
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify(ids),
+        });
+    }
+    async function sendPutAsync() {
+        const infos = new Array();
+        for (let i = 0; i <@Model.Count(); i++) {
+            const id = +document.getElementById(`element ${i}`).innerText;
+            infos.push({
+                OrderId: id,
+                Amount: +document.getElementById(`edit ${id}`).value
+            });
+        }
+
+        const response = await fetch(`/api/orders`, {
+            method: 'put',
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify(infos),
+        });
+    }
+    async function sendBuyAsync() {
+        const ids = new Array();
+        for (let i = 0; i <@Model.Count(); i++) {
+            ids.push(+document.getElementById(`element ${i}`).innerText);
+        }
+
+        const response = await fetch(`/api/orders/buy`, {
+            method: 'post',
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify(ids),
+        });
+    }
+
+    document.getElementById("delete").addEventListener("click", e => {
+            e.preventDefault();
+            sendDeleteAsync();
+    });
+    document.getElementById("update").addEventListener("click", e => {
+        e.preventDefault();
+        sendPutAsync();
+    });
+    document.getElementById("buy").addEventListener("click", e => {
+        e.preventDefault();
+        sendBuyAsync();
+    });
+</script>

@@ -11,5 +11,6 @@ namespace DataAccessLayer.Entities
     {
         public string Delivery { get; set; }
         public ICollection<ProductRating> Ratings { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

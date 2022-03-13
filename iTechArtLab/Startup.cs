@@ -52,6 +52,7 @@ namespace iTechArtLab
             services.AddTransient<AccessControlManager>();
             services.AddTransient<ModelValidator>();
             services.AddTransient<ProductsManager>();
+            services.AddTransient<OrdersManager>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
