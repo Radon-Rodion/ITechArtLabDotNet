@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: testing current branch
-      - run: dotnet test
+        run: dotnet test
       - name: testing main branch
       - uses: Radon-Rodion/ITechArtLabDotNet@main
-      - run: dotnet test
+        run: dotnet test
