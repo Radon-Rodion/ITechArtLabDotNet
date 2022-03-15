@@ -1,17 +1,24 @@
 name: dotnet package
+
 on: [push]
+
 jobs:
-  test-job:
+  build:
+
     runs-on: ubuntu-latest
-  steps:
-- uses: actions/checkout@v2
-- name: Setup dotnet
-  uses: actions/setup-dotnet@v1
-  with:
-    dotnet-version: '3.1.x'
-- name: Install dependencies
-  run: dotnet restore
-- name: Build
-  run: dotnet build
-- name: Test with the dotnet CLI
-  run: dotnet test
+    strategy:
+      matrix:
+        dotnet-version: ['3.0', '3.1.x', '5.0.x' ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
