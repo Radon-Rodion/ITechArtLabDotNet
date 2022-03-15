@@ -14,7 +14,7 @@ namespace BuisnessLayer
 {
     public class ProductsManager
     {
-        public IEnumerable<Platform> GetTop3Platforms(IQueryable<Platform> platforms)//ApplicationDbContext context
+        public IEnumerable<Platform> GetTop3Platforms(IQueryable<Platform> platforms)
         {
             return platforms.AsParallel().OrderByDescending(p => p.Products.Where(prod => !prod.IsDeleted).Count()).Take(3);
         }

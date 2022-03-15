@@ -3,6 +3,18 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+strategy:
+      matrix:
+        dotnet-version: ['3.0', '3.1.x', '5.0.x' ]
     steps:
-      - name: testing current branch
-        run: dotnet test
+- uses: actions/checkout@v2
+- name: Setup dotnet
+  uses: actions/setup-dotnet@v1
+  with:
+    dotnet-version: '3.1.x'
+- name: Install dependencies
+  run: dotnet restore
+- name: Build
+  run: dotnet build
+- name: Test with the dotnet CLI
+  run: dotnet test
