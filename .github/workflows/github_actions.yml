@@ -6,6 +6,7 @@ jobs:
     steps:
       - name: testing current branch
         run: dotnet test
-      - name: testing main branch
+      - name: switch to main branch
         uses: Radon-Rodion/ITechArtLabDotNet@main
+      - name: testing main branch
         run: dotnet test
