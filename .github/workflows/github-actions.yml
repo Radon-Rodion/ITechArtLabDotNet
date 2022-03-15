@@ -1,0 +1,11 @@
+name: GitHub Actions
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: testing current branch
+      - run: dotnet test
+      - name: testing main branch
+      - uses: Radon-Rodion/ITechArtLabDotNet@main
+      - run: dotnet test
