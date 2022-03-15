@@ -14,7 +14,7 @@ namespace TestProject.BusnessLogicTests
         public void UploadImagePositiveTest()
         {
             var cloudinaryManager = new CloudinaryManager("912279616246254", "ipI0v7g-_jfkl-zRXZXEjSzZ4Do", "radon-rodion");
-            var uri = cloudinaryManager.UploadImage("p:\\xbox.png");
+            var uri = cloudinaryManager.UploadImage("https://besplatnye-programmy.com/uploads/posts/2019-04/1554187375_microsoft_picture_manager.jpg");
             Assert.Contains("http://res.cloudinary.com/radon-rodion/image/upload/", uri);
         }
     }
