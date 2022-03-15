@@ -1,7 +1,7 @@
 name: GitHub Actions
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: testing current branch
