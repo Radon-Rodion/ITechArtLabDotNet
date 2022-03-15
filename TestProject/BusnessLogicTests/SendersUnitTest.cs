@@ -14,8 +14,11 @@ namespace TestProject.BuisnessLogicTests
         [Fact]
         public void TestSmtp()
         {
-            IEmailSender mailer = new SmtpSender(MoqConfigs.smtpConfig);
-            mailer.SendMess("radon0rodion@gmail.com", "UnitTest message", "This is just a program test");
+            IEmailSender mailer = new SmtpSender("smtp.gmail.com",  587, "radon0rodion@gmail.com", "testPassword");
+            Assert.Throws<System.Net.Mail.SmtpException>(() =>
+            {
+                mailer.SendMess("radon0rodion@gmail.com", "UnitTest message", "This is just a program test");
+            });
         }
     }
 }
