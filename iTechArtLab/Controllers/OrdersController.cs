@@ -51,7 +51,7 @@ namespace iTechArtLab.Controllers
                 return errorResponse;
 
             int userId = _sessionManager.GetUserId(HttpContext.Session);
-            var orders = _ordersManager.GetOrders(userId, _context);
+            var orders = await _ordersManager.GetOrdersAsync(userId, _context);
 
             var models = _ordersManager.CreateViewModelsListFromOrders(orders, _context);
             return View("List", models);
@@ -66,7 +66,7 @@ namespace iTechArtLab.Controllers
                 if (!_accessControlManager.IsTokenValid(HttpContext, out errorResponse, _sessionManager))
                     return errorResponse;
                 int userId = _sessionManager.GetUserId(HttpContext.Session);
-                var order = _ordersManager.FindOrder(userId, productId, _context);
+                var order = await _ordersManager.FindOrderAsync(userId, productId, _context);
                 if (order == null)
                     order = await _ordersManager.CreateOrderAsync(userId, productId, amount, _context);
                 else
@@ -91,7 +91,7 @@ namespace iTechArtLab.Controllers
             try
             {
                 OrderViewModel[] orderInfos = await HttpContext.Request.ReadFromJsonAsync<OrderViewModel[]>();
-                Log.Logger.Information($"1: [id: {orderInfos[0].OrderId} am: {orderInfos[0].Amount}]\n2: [id: {orderInfos[1].OrderId} am: {orderInfos[1].Amount}]\n3: [id: {orderInfos[2].OrderId} am: {orderInfos[2].Amount}]\n4: [id: {orderInfos[3].OrderId} am: {orderInfos[3].Amount}]");
+                
                 var orders = await _ordersManager.UpdateOrdersAsync(orderInfos, _context);
                 var models = _ordersManager.CreateViewModelsListFromOrders(orders, _context);
                 return View("List", models);
@@ -120,7 +120,7 @@ namespace iTechArtLab.Controllers
                 var orders = new List<Order>();
                 foreach (int orderId in idsToDelete)
                 {
-                    var order = _ordersManager.FindOrder(orderId, _context);
+                    var order = await _ordersManager.FindOrderAsync(orderId, _context);
                     if (order != null)
                         orders.Add(order);
                 }
@@ -147,7 +147,7 @@ namespace iTechArtLab.Controllers
                 var orders = new List<Order>();
                 foreach (int orderId in idsToBuy)
                 {
-                    var order = _ordersManager.FindOrder(orderId, _context);
+                    var order = await _ordersManager.FindOrderAsync(orderId, _context);
                     if (order != null)
                         orders.Add(order);
                 }

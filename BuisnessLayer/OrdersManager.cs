@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Models;
 using DataAccessLayer.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BuisnessLayer
 {
     public class OrdersManager
     {
-        public IEnumerable<Order> GetOrders(int userId, ApplicationDbContext context)
+        public Task<List<Order>> GetOrdersAsync(int userId, ApplicationDbContext context)
         {
-            var orders = context.Orders.Where(o => o.UserId == userId && o.Status == OrderStatus.Name(OrderStatuses.Active));
-            return orders.ToList();
+            var orders = context.Orders.Where(o => o.UserId == userId && o.Status == OrderStatus.Name(OrderStatuses.Active)).AsNoTracking();
+            return orders.ToListAsync();
         }
 
         public async Task<Order> CreateOrderAsync(int userId, int productId, int amount, ApplicationDbContext context)
@@ -35,23 +36,23 @@ namespace BuisnessLayer
             return order;
         }
 
-        public Order FindOrder(int userId, int productId, ApplicationDbContext context)
+        public Task<Order> FindOrderAsync(int userId, int productId, ApplicationDbContext context)
         {
             var order = context.Orders.Where(o => o.UserId == userId && o.ProductId == productId && 
-                o.Status == OrderStatus.Name(OrderStatuses.Active)).FirstOrDefault();
+                o.Status == OrderStatus.Name(OrderStatuses.Active)).AsNoTracking().FirstOrDefaultAsync();
             return order;
         }
 
-        public Order FindOrder(int orderId, ApplicationDbContext context)
+        public Task<Order> FindOrderAsync(int orderId, ApplicationDbContext context)
         {
             var order = context.Orders.Where(o => o.Id == orderId && 
-                o.Status == OrderStatus.Name(OrderStatuses.Active)).FirstOrDefault();
+                o.Status == OrderStatus.Name(OrderStatuses.Active)).AsNoTracking().FirstOrDefaultAsync();
             return order;
         }
 
         public async Task<Order> UpdateOrderFromViewModelAsync(OrderViewModel model, ApplicationDbContext context)
         {
-            var order = FindOrder(model.OrderId, context);
+            var order = await FindOrderAsync(model.OrderId, context);
             if (order == null)
                 throw new ArgumentException($"Invalid order id: {model.OrderId}");
             order.Amount = model.Amount;
@@ -64,7 +65,7 @@ namespace BuisnessLayer
         {
             foreach(var orderInfo in orderInfos)
             {
-                var order = FindOrder(orderInfo.OrderId, context);
+                var order = await FindOrderAsync(orderInfo.OrderId, context);
                 if (order == null)
                     throw new ArgumentException($"Invalid order id: {orderInfo.OrderId}");
                 order.Amount = orderInfo.Amount;

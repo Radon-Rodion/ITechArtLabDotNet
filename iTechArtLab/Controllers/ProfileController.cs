@@ -11,6 +11,8 @@ using System.Text;
 using BuisnessLayer.JWToken;
 using BuisnessLayer;
 using DataAccessLayer.Entities;
+using Microsoft.Extensions.Caching.Memory;
+using System.Text.Json;
 
 namespace iTechArtLab.Controllers
 {
@@ -24,8 +26,9 @@ namespace iTechArtLab.Controllers
         private readonly SessionManager _sessionManager;
         private readonly JWTokenGenerator _jWTokenGenerator;
         private readonly JWTokenValidator _jWTokenValidator;
+        private readonly IMemoryCache _memoryCache;
 
-        public ProfileController(UserManager<User> userManager, IOptions<JWTokenConfig> jWTokenOptions, SessionManager sessionManager,
+        public ProfileController(UserManager<User> userManager, IOptions<JWTokenConfig> jWTokenOptions, SessionManager sessionManager, IMemoryCache memoryCache,
             JWTokenValidator jWTokenValidator, JWTokenGenerator jWTokenGenerator, AccessControlManager accessControlManager, ModelValidator modelValidator)
         {
             _userManager = userManager;
@@ -36,6 +39,7 @@ namespace iTechArtLab.Controllers
             _jWTokenValidator = jWTokenValidator;
             _jWTokenGenerator = jWTokenGenerator;
             _accessControlManager = accessControlManager;
+            _memoryCache = memoryCache;
         }
 
         /// <summary>
@@ -50,7 +54,14 @@ namespace iTechArtLab.Controllers
             string errorMessage;
             if (!_accessControlManager.IsTokenValid(HttpContext, out errorMessage, _sessionManager)) return errorMessage;
 
-            var user = await _userManager.FindByIdAsync(_sessionManager.GetUserId(HttpContext.Session).ToString());
+            User user = null;
+            int id = _sessionManager.GetUserId(HttpContext.Session);
+            if (!_memoryCache.TryGetValue(id, out user))
+            {
+                user = await _userManager.FindByIdAsync(id.ToString());
+                _memoryCache.Set(id, user);
+            }
+
             ProfileViewModel model = new ProfileViewModel() { UserName = user.UserName, Email = user.Email, Delivery = user.Delivery, PhoneNumber = user.PhoneNumber };
             return View("ProfileInfo",model);
         }
@@ -77,7 +88,14 @@ namespace iTechArtLab.Controllers
 
             if (modelErrors.Count == 0)
             {
-                var user = await _userManager.FindByIdAsync(_sessionManager.GetUserId(HttpContext.Session).ToString());
+                User user = null;
+                int id = _sessionManager.GetUserId(HttpContext.Session);
+                if (!_memoryCache.TryGetValue(id, out user))
+                {
+                    user = await _userManager.FindByIdAsync(id.ToString());
+                }
+                else _memoryCache.Remove(id);
+
                 user.Email = email;
                 user.UserName = userName;
                 user.PhoneNumber = phoneNumber;
@@ -88,7 +106,8 @@ namespace iTechArtLab.Controllers
                 {
                     var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
                     _sessionManager.SetToken(HttpContext.Session, _jWTokenGenerator.GenerateToken(user?.Email, userRole, _jWTokenConfig));
-                    return Json(new { email = user.Email, userName = user.UserName, delivery = user.Delivery, phoneNumber = user.PhoneNumber });
+                    return Json(new { email = user.Email, userName = user.UserName, delivery = user.Delivery, phoneNumber = user.PhoneNumber }, 
+                        new JsonSerializerOptions() { IgnoreNullValues = true });
                 }
                 else
                 {
@@ -141,7 +160,13 @@ namespace iTechArtLab.Controllers
 
             if (modelErrors.Count == 0)
             {
-                var user = await _userManager.FindByIdAsync(_sessionManager.GetUserId(HttpContext.Session).ToString());
+                User user = null;
+                int id = _sessionManager.GetUserId(HttpContext.Session);
+                if (!_memoryCache.TryGetValue(id, out user))
+                {
+                    user = await _userManager.FindByIdAsync(id.ToString());
+                }
+                else _memoryCache.Remove(id);
 
                 var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)

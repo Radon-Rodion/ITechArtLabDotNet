@@ -16,12 +16,12 @@ namespace BuisnessLayer
     {
         public IEnumerable<Platform> GetTop3Platforms(IQueryable<Platform> platforms)//ApplicationDbContext context
         {
-            return platforms.OrderByDescending(p => p.Products.Where(prod => !prod.IsDeleted).Count()).Take(3);
+            return platforms.AsParallel().OrderByDescending(p => p.Products.Where(prod => !prod.IsDeleted).Count()).Take(3);
         }
 
         public IEnumerable<Platform> GetTop3Platforms(IEnumerable<Platform> platforms)
         {
-            return platforms.OrderByDescending(p => p.Products.Where(prod => !prod.IsDeleted).Count()).Take(3);
+            return platforms.AsParallel().OrderByDescending(p => p.Products.Where(prod => !prod.IsDeleted).Count()).Take(3);
         }
 
         public IEnumerable<Product> SearchByName(IEnumerable<Product> products, string namePart, int limit, int offset)
@@ -37,7 +37,7 @@ namespace BuisnessLayer
             var productsFitting = context.Products.Where(p => !p.IsDeleted && p.Name.ToLower().Contains(nameFilter.ToLower().Trim())
                 && (genreFilter == -1 || p.GenreId == genreFilter) && (ageFilter == -1 || p.AgeRating == ageFilter))
                 .OrderBy(p => sortField == SortField.Name(SortFields.Price) ? p.Price * sortParam : p.TotalRating * sortParam)
-                .Skip((pageNumber-1)*elementsOnPage).Take(elementsOnPage);
+                .Skip((pageNumber-1)*elementsOnPage).Take(elementsOnPage).AsNoTracking();
             return await productsFitting.ToListAsync();
         }
 
@@ -99,8 +99,11 @@ namespace BuisnessLayer
         {
             long ratingsSum = 0;
             var ratingsOfProduct = context.Ratings.Where(r => r.ProductId == productId && !r.IsDeleted);
-            foreach (var rating in ratingsOfProduct)
+            Parallel.ForEach(ratingsOfProduct, rating =>
+            {
                 ratingsSum += rating.Rating;
+            });
+                
 
             var product = await context.Products.FindAsync(productId);
             if (ratingsOfProduct.Count() != 0)
@@ -113,7 +116,7 @@ namespace BuisnessLayer
 
         public async Task<ProductRating> FindRatingAsync(int productId, int userId, ApplicationDbContext context)
         {
-            var rating = context.Ratings.Where(r => r.ProductId == productId && r.UserId == userId).FirstOrDefault();
+            var rating = context.Ratings.Where(r => r.ProductId == productId && r.UserId == userId).AsNoTracking().FirstOrDefault();
             return rating;
         }
 
