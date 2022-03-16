@@ -88,13 +88,10 @@ namespace iTechArtLab.Controllers
 
             if (modelErrors.Count == 0)
             {
-                User user = null;
+                
                 int id = _sessionManager.GetUserId(HttpContext.Session);
-                if (!_memoryCache.TryGetValue(id, out user))
-                {
-                    user = await _userManager.FindByIdAsync(id.ToString());
-                }
-                else _memoryCache.Remove(id);
+                User user = user = await _userManager.FindByIdAsync(id.ToString());
+                _memoryCache.Remove(id);
 
                 user.Email = email;
                 user.UserName = userName;

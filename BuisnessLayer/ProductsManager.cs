@@ -116,7 +116,7 @@ namespace BuisnessLayer
 
         public async Task<ProductRating> FindRatingAsync(int productId, int userId, ApplicationDbContext context)
         {
-            var rating = context.Ratings.Where(r => r.ProductId == productId && r.UserId == userId).AsNoTracking().FirstOrDefault();
+            var rating = await context.Ratings.Where(r => r.ProductId == productId && r.UserId == userId).AsNoTracking().FirstOrDefaultAsync();
             return rating;
         }
 

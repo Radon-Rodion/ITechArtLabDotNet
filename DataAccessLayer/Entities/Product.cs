@@ -23,8 +23,8 @@ namespace DataAccessLayer.Entities
         public ICollection<Order> Orders { get; set; }
         public int? GenreId { get; set; }
         public int? AgeRating { get; set; }
-        public string? LogoLink { get; set; }
-        public string? BackgroundLink { get; set; }
+        public string LogoLink { get; set; }
+        public string BackgroundLink { get; set; }
         public double? Price { get; set; }
 
         public int? Count { get; set; }
