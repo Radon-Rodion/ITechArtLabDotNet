@@ -81,56 +81,71 @@
                 @Html.DisplayNameFor(model => model.Count)
             </th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PlatformId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GenreId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalRating)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AgeRating)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LogoLink)
-                    <img src="@item.LogoLink" alt="No Image" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BackgroundLink)
-                    <img src="@item.BackgroundLink" alt="No Image" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Count)
-                </td>
-                <td>
-                    <a href="id/@item.Id">Details</a>
-                </td>
-                <td>
-                    <a href="rating?gameId=@item.Id">Rate</a>
-                </td>
-                <td>
-                    <button id="@item.Id">Delete</button>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlatformId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GenreId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AgeRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LogoLink)
+                <img src="@item.LogoLink" alt="No Image" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BackgroundLink)
+                <img src="@item.BackgroundLink" alt="No Image" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Count)
+            </td>
+            <td>
+                <a href="id/@item.Id">Details</a>
+            </td>
+            <td>
+                <a href="rating?gameId=@item.Id">Rate</a>
+            </td>
+            <td>
+                <button id="@item.Id">Delete</button>
+            </td>
+            <td>
+                <button id="Order @item.Id">Order</button>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
 
 <script>
+    async function orderAsync(id) {
+        const formData = new FormData();
+        formData.append("productId", id);
+        formData.append("amount", 1);
+
+        const response = await fetch(`/api/orders`, {
+            method: 'post',
+            headers: { "Accept": "application/json" },
+            body: formData
+        });
+    }
     async function sendDeleteAsync(id) {
         const response = await fetch(`/api/games/id/${id}`, {
             method: 'delete',
@@ -141,6 +156,11 @@
 @foreach (var item in Model)
 {
     <script>
+        document.getElementById("Order @item.Id").addEventListener("click", e => {
+             e.preventDefault();
+             orderAsync(@item.Id);
+        });
+
         document.getElementById("@item.Id").addEventListener("click", e => {
             e.preventDefault();
             sendDeleteAsync(@item.Id);

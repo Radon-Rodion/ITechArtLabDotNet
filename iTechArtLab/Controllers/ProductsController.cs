@@ -14,6 +14,7 @@ using BuisnessLayer.JWToken;
 using Microsoft.Extensions.Options;
 using iTechArtLab.ActionFilters;
 using Serilog;
+using System.Text.Json;
 
 namespace iTechArtLab.Controllers
 {
@@ -155,7 +156,7 @@ namespace iTechArtLab.Controllers
             {
                 Product newProduct = await _productsManager.AddNewProductAsync(_context, model, _cloudinaryManager);
                 HttpContext.Response.StatusCode = 201;
-                return Json(newProduct);
+                return Json(newProduct, new JsonSerializerOptions() { IgnoreNullValues=true });
             }
             return View("Create", model);
         }
@@ -210,7 +211,7 @@ namespace iTechArtLab.Controllers
             if (modelErrors.Count == 0)
             {
                 await _productsManager.UpdateProductFromModelAsync(product, model, _context, _cloudinaryManager);
-                return Json(product);
+                return Json(product, new JsonSerializerOptions() { IgnoreNullValues = true });
             }
 
             HttpContext.Response.StatusCode = 400;

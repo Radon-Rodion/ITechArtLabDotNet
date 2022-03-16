@@ -20,10 +20,11 @@ namespace DataAccessLayer.Entities
         public DateTime? DateCreated { get; set; }
         public int? TotalRating { get; set; }
         public ICollection<ProductRating> Ratings { get; set; }
+        public ICollection<Order> Orders { get; set; }
         public int? GenreId { get; set; }
         public int? AgeRating { get; set; }
-        public string? LogoLink { get; set; }
-        public string? BackgroundLink { get; set; }
+        public string LogoLink { get; set; }
+        public string BackgroundLink { get; set; }
         public double? Price { get; set; }
 
         public int? Count { get; set; }

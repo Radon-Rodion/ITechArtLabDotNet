@@ -9,7 +9,7 @@ using DataAccessLayer.Models;
 
 namespace TestProject.DataAcessLayerTests
 {
-    public class ProfileViewModelsUnitTest
+    public class ProductViewModelsUnitTest
     {
         ModelValidator modelValidator = new ModelValidator();
         [Fact]
